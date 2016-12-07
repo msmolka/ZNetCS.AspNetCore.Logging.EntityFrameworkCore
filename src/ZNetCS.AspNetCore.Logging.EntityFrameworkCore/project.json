@@ -26,7 +26,7 @@
   "copyright": "Marcin Smółka zNET Computer Solutions",
   "authors": [ "Marcin Smółka" ],
   "buildOptions": {
-    "warningsAsErrors": false,
+    "warningsAsErrors": true,
     "xmlDoc": true,
     "additionalArguments": [ "/ruleset:../../CommonRuleSet.ruleset", "/additionalfile:../../stylecop.json" ]
   },

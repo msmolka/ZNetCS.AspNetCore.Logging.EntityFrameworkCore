@@ -31,7 +31,7 @@ namespace ZNetCS.AspNetCore.Logging.EntityFrameworkCoreTest
         /// The accessor.
         /// </param>
         public ExtendedLog(IHttpContextAccessor accessor)
-        {          
+        {
             this.Browser = "Test Browser";
             this.Host = "localhost";
             this.User = "Test User";

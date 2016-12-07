@@ -74,7 +74,7 @@ namespace ZNetCS.AspNetCore.Logging.EntityFrameworkCoreTest
                     {
                         logger.LogError(1, ex, "Exception message");
                     }
-                    
+
                     await next.Invoke();
                 });
 

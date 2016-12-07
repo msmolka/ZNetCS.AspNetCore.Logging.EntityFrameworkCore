@@ -104,7 +104,7 @@ namespace ZNetCS.AspNetCore.Logging.EntityFrameworkCore
     /// </typeparam>
     /// <typeparam name="TKey">
     /// The type of the primary key for a log.
-    /// </typeparam>    
+    /// </typeparam>
     [SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1402:FileMayOnlyContainASingleClass", Justification = "OK")]
     public class EntityFrameworkLogger<TContext, TLog, TKey> : IEntityFrameworkLogger
         where TContext : DbContext
@@ -114,14 +114,14 @@ namespace ZNetCS.AspNetCore.Logging.EntityFrameworkCore
         #region Fields
 
         /// <summary>
-        /// The function used to filter events based on the log level.
-        /// </summary>
-        private readonly Func<string, LogLevel, bool> filter;
-
-        /// <summary>
         /// The function used to create new model instance for a log.
         /// </summary>
         private readonly Func<int, int, string, string, TLog> creator;
+
+        /// <summary>
+        /// The function used to filter events based on the log level.
+        /// </summary>
+        private readonly Func<string, LogLevel, bool> filter;
 
         /// <summary>
         /// The name of the logger.
@@ -234,7 +234,7 @@ namespace ZNetCS.AspNetCore.Logging.EntityFrameworkCore
             {
                 // create new log with resolving dependency injection
                 TLog log = this.creator((int)logLevel, eventId, this.name, message);
-              
+
                 context.Set<TLog>().Add(log);
 
                 context.SaveChanges();

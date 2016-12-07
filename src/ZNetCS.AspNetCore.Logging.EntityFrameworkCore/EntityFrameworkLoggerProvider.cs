@@ -139,6 +139,7 @@ namespace ZNetCS.AspNetCore.Logging.EntityFrameworkCore
     /// <typeparam name="TKey">
     /// The type of the primary key for a log.
     /// </typeparam>
+    [SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1402:FileMayOnlyContainASingleClass", Justification = "OK")]
     public class EntityFrameworkLoggerProvider<TContext, TLog, TLogger, TKey> : IEntityFrameworkLoggerProvider
         where TContext : DbContext
         where TLog : Log<TKey>
@@ -267,7 +268,7 @@ namespace ZNetCS.AspNetCore.Logging.EntityFrameworkCore
         /// </param>
         /// <param name="message">
         /// The message.
-        /// </param>     
+        /// </param>
         private TLog DefaultCreator(int logLevel, int eventId, string name, string message)
         {
             var log = ActivatorUtilities.CreateInstance<TLog>(this.serviceProvider);
