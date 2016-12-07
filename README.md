@@ -156,7 +156,7 @@ public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerF
 {
     // MyDbContext is registered in ConfigureServices Entity Framework Core application context
 	loggerFactory 
-        .AddEntityFramework<ContextSimple>(
+        .AddEntityFramework<MyDbContext>(
             serviceProvider,
             creator: (logLevel, eventId, name, message) => new Log
             {
