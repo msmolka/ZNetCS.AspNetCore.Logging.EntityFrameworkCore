@@ -43,7 +43,8 @@ namespace ZNetCS.AspNetCore.Logging.EntityFrameworkCore
         /// <param name="creator">
         /// The creator used to create new instance of log.
         /// </param>
-        public EntityFrameworkLoggerProvider(IServiceProvider serviceProvider, Func<string, LogLevel, bool> filter, Func<int, int, string, string, Log> creator = null) : base(serviceProvider, filter, creator)
+        public EntityFrameworkLoggerProvider(IServiceProvider serviceProvider, Func<string, LogLevel, bool> filter, Func<int, int, string, string, Log> creator = null)
+            : base(serviceProvider, filter, creator)
         {
         }
 
@@ -78,7 +79,8 @@ namespace ZNetCS.AspNetCore.Logging.EntityFrameworkCore
         /// <param name="creator">
         /// The creator used to create new instance of log.
         /// </param>
-        public EntityFrameworkLoggerProvider(IServiceProvider serviceProvider, Func<string, LogLevel, bool> filter, Func<int, int, string, string, TLog> creator = null) : base(serviceProvider, filter, creator)
+        public EntityFrameworkLoggerProvider(IServiceProvider serviceProvider, Func<string, LogLevel, bool> filter, Func<int, int, string, string, TLog> creator = null)
+            : base(serviceProvider, filter, creator)
         {
         }
 
@@ -117,7 +119,8 @@ namespace ZNetCS.AspNetCore.Logging.EntityFrameworkCore
         /// <param name="creator">
         /// The creator used to create new instance of log.
         /// </param>
-        public EntityFrameworkLoggerProvider(IServiceProvider serviceProvider, Func<string, LogLevel, bool> filter, Func<int, int, string, string, TLog> creator = null) : base(serviceProvider, filter, creator)
+        public EntityFrameworkLoggerProvider(IServiceProvider serviceProvider, Func<string, LogLevel, bool> filter, Func<int, int, string, string, TLog> creator = null)
+            : base(serviceProvider, filter, creator)
         {
         }
 
@@ -152,6 +155,11 @@ namespace ZNetCS.AspNetCore.Logging.EntityFrameworkCore
         /// The function used to create new model instance for a log.
         /// </summary>
         private readonly Func<int, int, string, string, TLog> creator;
+
+        /// <summary>
+        /// The object factory to create new logger used defined types.
+        /// </summary>
+        private readonly ObjectFactory factory;
 
         /// <summary>
         /// The function used to filter events based on the log level.
@@ -191,13 +199,17 @@ namespace ZNetCS.AspNetCore.Logging.EntityFrameworkCore
                 throw new ArgumentNullException(nameof(serviceProvider));
             }
 
+            if (filter == null)
+            {
+                throw new ArgumentNullException(nameof(filter));
+            }
+
             this.serviceProvider = serviceProvider;
             this.filter = filter;
-
-            if (creator == null)
-            {
-                this.creator = this.DefaultCreator;
-            }
+            this.creator = creator;
+            this.factory = ActivatorUtilities.CreateFactory(
+                typeof(TLogger),
+                new[] { typeof(string), typeof(Func<string, LogLevel, bool>), typeof(Func<int, int, string, string, TLog>) });
         }
 
         #endregion
@@ -223,7 +235,7 @@ namespace ZNetCS.AspNetCore.Logging.EntityFrameworkCore
         public virtual ILogger CreateLogger(string categoryName)
         {
             this.ThrowIfDisposed();
-            return ActivatorUtilities.CreateInstance<TLogger>(this.serviceProvider, categoryName, this.filter, this.creator);
+            return (ILogger)this.factory(this.serviceProvider, new object[] { categoryName, this.filter, this.creator });
         }
 
         #endregion
@@ -252,34 +264,6 @@ namespace ZNetCS.AspNetCore.Logging.EntityFrameworkCore
             {
                 throw new ObjectDisposedException(this.GetType().Name);
             }
-        }
-
-        /// <summary>
-        /// The default log creator method.
-        /// </summary>
-        /// <param name="logLevel">
-        /// The log level.
-        /// </param>
-        /// <param name="eventId">
-        /// The event id.
-        /// </param>
-        /// <param name="name">
-        /// The log name.
-        /// </param>
-        /// <param name="message">
-        /// The message.
-        /// </param>
-        private TLog DefaultCreator(int logLevel, int eventId, string name, string message)
-        {
-            var log = ActivatorUtilities.CreateInstance<TLog>(this.serviceProvider);
-
-            log.TimeStamp = DateTimeOffset.Now;
-            log.Level = logLevel;
-            log.EventId = eventId;
-            log.Name = name.Length > 255 ? name.Substring(0, 255) : name;
-            log.Message = message;
-
-            return log;
         }
 
         #endregion

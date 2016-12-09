@@ -93,7 +93,7 @@ namespace ZNetCS.AspNetCore.Logging.EntityFrameworkCoreTest
             services.AddEntityFrameworkInMemoryDatabase();
 
             // Add framework services.
-            services.AddDbContext<ContextSimple>(options => options.UseInMemoryDatabase("SimpleLogDatabase"));
+            services.AddDbContext<ContextSimple>(options => options.UseInMemoryDatabase("SimpleLogCreatorDatabase"));
         }
 
         #endregion

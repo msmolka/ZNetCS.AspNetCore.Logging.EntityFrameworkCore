@@ -1,5 +1,5 @@
 ﻿{
-  "version": "1.0.0",
+  "version": "1.0.1",
   "packOptions": {
     "owners": [ "Marcin Smółka" ],
     "licenseUrl": "https://raw.githubusercontent.com/msmolka/ZNetCS.AspNetCore.Logging.EntityFrameworkCore/master/LICENSE",

@@ -46,7 +46,11 @@ namespace ZNetCS.AspNetCore.Logging.EntityFrameworkCore
         /// <param name="creator">
         /// The creator used to create new instance of log.
         /// </param>
-        public EntityFrameworkLogger(IServiceProvider serviceProvider, string name, Func<string, LogLevel, bool> filter, Func<int, int, string, string, Log> creator)
+        public EntityFrameworkLogger(
+            IServiceProvider serviceProvider,
+            string name,
+            Func<string, LogLevel, bool> filter,
+            Func<int, int, string, string, Log> creator = null)
             : base(serviceProvider, name, filter, creator)
         {
         }
@@ -85,7 +89,11 @@ namespace ZNetCS.AspNetCore.Logging.EntityFrameworkCore
         /// <param name="creator">
         /// The creator used to create new instance of log.
         /// </param>
-        public EntityFrameworkLogger(IServiceProvider serviceProvider, string name, Func<string, LogLevel, bool> filter, Func<int, int, string, string, TLog> creator)
+        public EntityFrameworkLogger(
+            IServiceProvider serviceProvider,
+            string name,
+            Func<string, LogLevel, bool> filter,
+            Func<int, int, string, string, TLog> creator = null)
             : base(serviceProvider, name, filter, creator)
         {
         }
@@ -152,13 +160,27 @@ namespace ZNetCS.AspNetCore.Logging.EntityFrameworkCore
         /// <param name="creator">
         /// The creator used to create new instance of log.
         /// </param>
-        public EntityFrameworkLogger(IServiceProvider serviceProvider, string name, Func<string, LogLevel, bool> filter, Func<int, int, string, string, TLog> creator)
+        public EntityFrameworkLogger(
+            IServiceProvider serviceProvider,
+            string name,
+            Func<string, LogLevel, bool> filter,
+            Func<int, int, string, string, TLog> creator = null)
         {
+            if (serviceProvider == null)
+            {
+                throw new ArgumentNullException(nameof(serviceProvider));
+            }
+
+            if (filter == null)
+            {
+                throw new ArgumentNullException(nameof(filter));
+            }
+
             this.serviceProvider = serviceProvider;
 
             this.name = name ?? string.Empty;
             this.filter = filter;
-            this.creator = creator;
+            this.creator = creator ?? this.DefaultCreator;
         }
 
         #endregion
@@ -239,6 +261,34 @@ namespace ZNetCS.AspNetCore.Logging.EntityFrameworkCore
 
                 context.SaveChanges();
             }
+        }
+
+        /// <summary>
+        /// The default log creator method.
+        /// </summary>
+        /// <param name="logLevel">
+        /// The log level.
+        /// </param>
+        /// <param name="eventId">
+        /// The event id.
+        /// </param>
+        /// <param name="logName">
+        /// The log name.
+        /// </param>
+        /// <param name="message">
+        /// The message.
+        /// </param>
+        private TLog DefaultCreator(int logLevel, int eventId, string logName, string message)
+        {
+            var log = ActivatorUtilities.CreateInstance<TLog>(this.serviceProvider);
+
+            log.TimeStamp = DateTimeOffset.Now;
+            log.Level = logLevel;
+            log.EventId = eventId;
+            log.Name = logName.Length > 255 ? logName.Substring(0, 255) : logName;
+            log.Message = message;
+
+            return log;
         }
 
         #endregion

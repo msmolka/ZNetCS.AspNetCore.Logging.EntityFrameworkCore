@@ -32,7 +32,7 @@ namespace ZNetCS.AspNetCore.Logging.EntityFrameworkCoreTest
         /// <summary>
         /// Initializes a new instance of the <see cref="TestLoggerSimpleCreator"/> class.
         /// </summary>
-        public TestLoggerSimpleCreator() : base(0)
+        public TestLoggerSimpleCreator() : base(3)
         {
         }
 
@@ -47,7 +47,7 @@ namespace ZNetCS.AspNetCore.Logging.EntityFrameworkCoreTest
         public async Task WriteSimpleCreatorLog()
         {
             var options = new DbContextOptionsBuilder<ContextSimple>()
-                .UseInMemoryDatabase("SimpleLogDatabase")
+                .UseInMemoryDatabase("SimpleLogCreatorDatabase")
                 .Options;
 
             // Act
