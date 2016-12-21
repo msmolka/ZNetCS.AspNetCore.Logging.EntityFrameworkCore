@@ -122,19 +122,9 @@ namespace ZNetCS.AspNetCore.Logging.EntityFrameworkCore
         #region Fields
 
         /// <summary>
-        /// The function used to create new model instance for a log.
-        /// </summary>
-        private readonly Func<int, int, string, string, TLog> creator;
-
-        /// <summary>
         /// The function used to filter events based on the log level.
         /// </summary>
         private readonly Func<string, LogLevel, bool> filter;
-
-        /// <summary>
-        /// The name of the logger.
-        /// </summary>
-        private readonly string name;
 
         /// <summary>
         /// The service provider to resolve dependency.
@@ -178,10 +168,25 @@ namespace ZNetCS.AspNetCore.Logging.EntityFrameworkCore
 
             this.serviceProvider = serviceProvider;
 
-            this.name = name ?? string.Empty;
             this.filter = filter;
-            this.creator = creator ?? this.DefaultCreator;
+
+            this.Name = name ?? string.Empty;
+            this.Creator = creator ?? this.DefaultCreator;
         }
+
+        #endregion
+
+        #region Properties
+
+        /// <summary>
+        /// Gets the function used to create new model instance for a log.
+        /// </summary>
+        protected virtual Func<int, int, string, string, TLog> Creator { get; }
+
+        /// <summary>
+        /// Gets the name of the logger.
+        /// </summary>
+        protected virtual string Name { get; }
 
         #endregion
 
@@ -198,7 +203,7 @@ namespace ZNetCS.AspNetCore.Logging.EntityFrameworkCore
         /// <inheritdoc />
         public virtual bool IsEnabled(LogLevel logLevel)
         {
-            return (this.filter == null) || this.filter(this.name, logLevel);
+            return (this.filter == null) || this.filter(this.Name, logLevel);
         }
 
         /// <inheritdoc />
@@ -255,7 +260,7 @@ namespace ZNetCS.AspNetCore.Logging.EntityFrameworkCore
             using (var context = ActivatorUtilities.CreateInstance<TContext>(this.serviceProvider))
             {
                 // create new log with resolving dependency injection
-                TLog log = this.creator((int)logLevel, eventId, this.name, message);
+                TLog log = this.Creator((int)logLevel, eventId, this.Name, message);
 
                 context.Set<TLog>().Add(log);
 
