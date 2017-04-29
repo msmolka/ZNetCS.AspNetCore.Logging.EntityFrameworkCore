@@ -61,6 +61,12 @@ namespace ZNetCS.AspNetCore.Logging.EntityFrameworkCoreTest
                             .UseStartup<StartupSimpleCreator>()
                             .UseContentRoot(Directory.GetCurrentDirectory()));
                     break;
+                case 4:
+                    this.Server = new TestServer(
+                        new WebHostBuilder()
+                            .UseStartup<StartupSimpleNoFilter>()
+                            .UseContentRoot(Directory.GetCurrentDirectory()));
+                    break;
             }
 
             this.Client = this.Server.CreateClient();

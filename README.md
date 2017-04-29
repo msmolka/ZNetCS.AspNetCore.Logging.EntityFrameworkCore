@@ -13,7 +13,7 @@ Install using the [ZNetCS.AspNetCore.Logging.EntityFrameworkCore NuGet package](
 PM> Install-Package ZNetCS.AspNetCore.Logging.EntityFrameworkCore
 ```
 
-##Usage 
+## Usage 
 
 When you install the package, it should be added to your `package.json`. Alternatively, you can add it directly by adding:
 
@@ -21,7 +21,7 @@ When you install the package, it should be added to your `package.json`. Alterna
 ```json
 {
   "dependencies" : {
-    "ZNetCS.AspNetCore.Logging.EntityFrameworkCore": "1.0.2"
+    "ZNetCS.AspNetCore.Logging.EntityFrameworkCore": "1.0.3"
   }
 }
 ```
@@ -40,11 +40,33 @@ using ZNetCS.AspNetCore.Logging.EntityFrameworkCore;
 public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, IServiceProvider serviceProvider)
 {
     // MyDbContext is registered in ConfigureServices Entity Framework Core application context
-	loggerFactory.AddEntityFramework<MyDbContent>(serviceProvider);
+    loggerFactory.AddEntityFramework<MyDbContent>(serviceProvider);
 
-	// other middleware e.g. MVC etc
+    // other middleware e.g. MVC etc
 }
 ```
+
+### Important Notes
+In most case scenario you would not like add all logs from application to database. A lot of of them is jut debug/trace ones.
+In that case is better use filter before add `Logger`. This will also prevent some 'StackOverflowException' when using this 
+logger to log EntityFrameworkCore logs.
+
+```
+PM> Install-Package  Microsoft.Extensions.Logging.Filter;
+```
+
+```csharp
+    loggerFactory
+        .WithFilter(
+            new FilterLoggerSettings
+            {
+                { "Microsoft", LogLevel.None },
+                { "System", LogLevel.None }               
+            })
+        .AddEntityFramework<ContextSimple>(serviceProvider);
+```
+
+
 Then you need to setup your context to have access to log table e.g.
 
 ```csharp
@@ -107,9 +129,9 @@ Then change registration in `Configure` call of `Startup`:
 public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, IServiceProvider serviceProvider)
 {
     // MyDbContext is registered in ConfigureServices Entity Framework Core application context
-	loggerFactory.AddEntityFramework<MyDbContext, ExtendedLog>(serviceProvider);
+    loggerFactory.AddEntityFramework<MyDbContext, ExtendedLog>(serviceProvider);
 
-	// other middleware e.g. MVC etc
+    // other middleware e.g. MVC etc
 }
 
 public void ConfigureServices(IServiceCollection services)
@@ -161,7 +183,7 @@ There is also possibility to create new log model using custom creator method (w
 public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, IServiceProvider serviceProvider)
 {
     // MyDbContext is registered in ConfigureServices Entity Framework Core application context
-	loggerFactory 
+    loggerFactory 
         .AddEntityFramework<MyDbContext>(
             serviceProvider,
             creator: (logLevel, eventId, name, message) => new Log
@@ -173,6 +195,6 @@ public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerF
                 Message = message
             });
 
-	// other middleware e.g. MVC etc
+    // other middleware e.g. MVC etc
 }
 ```

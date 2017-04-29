@@ -156,19 +156,8 @@ namespace ZNetCS.AspNetCore.Logging.EntityFrameworkCore
             Func<string, LogLevel, bool> filter,
             Func<int, int, string, string, TLog> creator = null)
         {
-            if (serviceProvider == null)
-            {
-                throw new ArgumentNullException(nameof(serviceProvider));
-            }
-
-            if (filter == null)
-            {
-                throw new ArgumentNullException(nameof(filter));
-            }
-
-            this.serviceProvider = serviceProvider;
-
-            this.filter = filter;
+            this.serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
+            this.filter = filter ?? throw new ArgumentNullException(nameof(filter));
 
             this.Name = name ?? string.Empty;
             this.Creator = creator ?? this.DefaultCreator;
@@ -203,6 +192,12 @@ namespace ZNetCS.AspNetCore.Logging.EntityFrameworkCore
         /// <inheritdoc />
         public virtual bool IsEnabled(LogLevel logLevel)
         {
+            // internal check to not log any Microsoft.EntityFrameworkCore. It won't work any way and cause StackOverflowException
+            if (this.Name.StartsWith("Microsoft.EntityFrameworkCore", StringComparison.OrdinalIgnoreCase))
+            {
+                return false;
+            }
+
             return (this.filter == null) || this.filter(this.Name, logLevel);
         }
 

@@ -19,6 +19,6 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("ZNetCS.AspNetCore.Logging.EntityFrameworkCore")]
 [assembly: AssemblyProduct("ZNetCS.AspNetCore.Logging.EntityFrameworkCore")]
 [assembly: AssemblyTrademark("")]
-[assembly: AssemblyCopyright("Copyright © Marcin Smółka zNET Computer Solutions 2016")]
+[assembly: AssemblyCopyright("Copyright © Marcin Smółka zNET Computer Solutions 2016 - 2017")]
 [assembly: ComVisible(false)]
 [assembly: Guid("f56f98eb-7a88-4f81-ac08-e06f8265b142")]
