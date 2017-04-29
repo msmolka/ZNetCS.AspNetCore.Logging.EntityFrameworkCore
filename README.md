@@ -46,8 +46,8 @@ public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerF
 
 ### Important Notes
 In most case scenario you would not like add all logs from application to database. A lot of of them is jut debug/trace ones.
-In that case is better use filter before add `Logger`. This will also prevent some 'StackOverflowException' when using this 
-logger to log EntityFrameworkCore logs.
+In that case is better use filter before add `Logger`. This will also prevent some `StackOverflowException` when using this 
+logger to log `EntityFrameworkCore` logs.
 
 ```
 PM> Install-Package  Microsoft.Extensions.Logging.Filter;
