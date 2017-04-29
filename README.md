@@ -15,15 +15,13 @@ PM> Install-Package ZNetCS.AspNetCore.Logging.EntityFrameworkCore
 
 ## Usage 
 
-When you install the package, it should be added to your `package.json`. Alternatively, you can add it directly by adding:
+When you install the package, it should be added to your `.csproj`. Alternatively, you can add it directly by adding:
 
 
-```json
-{
-  "dependencies" : {
-    "ZNetCS.AspNetCore.Logging.EntityFrameworkCore": "1.0.3"
-  }
-}
+```xml
+<ItemGroup>
+    <PackageReference Include="ZNetCS.AspNetCore.Logging.EntityFrameworkCore" Version="1.0.3" />    
+</ItemGroup>
 ```
 
 In order to use the Entity Framework Logger Provider, you must configure the logger factory in `Configure` call of `Startup`: 
