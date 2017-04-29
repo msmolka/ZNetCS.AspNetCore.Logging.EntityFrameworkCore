@@ -44,7 +44,7 @@ namespace ZNetCS.AspNetCore.Logging.EntityFrameworkCore
         public static ILoggerFactory AddEntityFramework<TContext>(
             this ILoggerFactory factory,
             IServiceProvider serviceProvider,
-            Func<int, int, string, string, Log> creator = null)
+            Func<int, int, string, string, object[], Log> creator = null)
             where TContext : DbContext
         {
             return AddEntityFramework<TContext>(factory, serviceProvider, LogLevel.Information, creator);
@@ -73,7 +73,7 @@ namespace ZNetCS.AspNetCore.Logging.EntityFrameworkCore
             this ILoggerFactory factory,
             IServiceProvider serviceProvider,
             LogLevel minLevel,
-            Func<int, int, string, string, Log> creator = null)
+            Func<int, int, string, string, object[], Log> creator = null)
             where TContext : DbContext
         {
             return AddEntityFramework<TContext>(factory, serviceProvider, (_, logLevel) => logLevel >= minLevel, creator);
@@ -101,7 +101,7 @@ namespace ZNetCS.AspNetCore.Logging.EntityFrameworkCore
             this ILoggerFactory factory,
             IServiceProvider serviceProvider,
             Func<string, LogLevel, bool> filter,
-            Func<int, int, string, string, Log> creator = null)
+            Func<int, int, string, string, object[], Log> creator = null)
             where TContext : DbContext
         {
             factory.AddProvider(new EntityFrameworkLoggerProvider<TContext>(serviceProvider, filter, creator));
@@ -130,7 +130,7 @@ namespace ZNetCS.AspNetCore.Logging.EntityFrameworkCore
         public static ILoggerFactory AddEntityFramework<TContext, TLog>(
             this ILoggerFactory factory,
             IServiceProvider serviceProvider,
-            Func<int, int, string, string, TLog> creator = null)
+            Func<int, int, string, string, object[], TLog> creator = null)
             where TContext : DbContext
             where TLog : Log<int>
         {
@@ -163,7 +163,7 @@ namespace ZNetCS.AspNetCore.Logging.EntityFrameworkCore
             this ILoggerFactory factory,
             IServiceProvider serviceProvider,
             LogLevel minLevel,
-            Func<int, int, string, string, TLog> creator = null)
+            Func<int, int, string, string, object[], TLog> creator = null)
             where TContext : DbContext
             where TLog : Log<int>
         {
@@ -195,7 +195,7 @@ namespace ZNetCS.AspNetCore.Logging.EntityFrameworkCore
             this ILoggerFactory factory,
             IServiceProvider serviceProvider,
             Func<string, LogLevel, bool> filter,
-            Func<int, int, string, string, TLog> creator = null)
+            Func<int, int, string, string, object[], TLog> creator = null)
             where TContext : DbContext
             where TLog : Log<int>
         {
@@ -228,7 +228,7 @@ namespace ZNetCS.AspNetCore.Logging.EntityFrameworkCore
         public static ILoggerFactory AddEntityFramework<TContext, TLog, TLogger>(
             this ILoggerFactory factory,
             IServiceProvider serviceProvider,
-            Func<int, int, string, string, TLog> creator = null)
+            Func<int, int, string, string, object[], TLog> creator = null)
             where TContext : DbContext
             where TLog : Log<int>
             where TLogger : EntityFrameworkLogger<TContext, TLog>
@@ -265,7 +265,7 @@ namespace ZNetCS.AspNetCore.Logging.EntityFrameworkCore
             this ILoggerFactory factory,
             IServiceProvider serviceProvider,
             LogLevel minLevel,
-            Func<int, int, string, string, TLog> creator = null)
+            Func<int, int, string, string, object[], TLog> creator = null)
             where TContext : DbContext
             where TLog : Log<int>
             where TLogger : EntityFrameworkLogger<TContext, TLog>
@@ -301,7 +301,7 @@ namespace ZNetCS.AspNetCore.Logging.EntityFrameworkCore
             this ILoggerFactory factory,
             IServiceProvider serviceProvider,
             Func<string, LogLevel, bool> filter,
-            Func<int, int, string, string, TLog> creator = null)
+            Func<int, int, string, string, object[], TLog> creator = null)
             where TContext : DbContext
             where TLog : Log<int>
             where TLogger : EntityFrameworkLogger<TContext, TLog>
@@ -338,7 +338,7 @@ namespace ZNetCS.AspNetCore.Logging.EntityFrameworkCore
         public static ILoggerFactory AddEntityFramework<TContext, TLog, TLogger, TKey>(
             this ILoggerFactory factory,
             IServiceProvider serviceProvider,
-            Func<int, int, string, string, TLog> creator = null)
+            Func<int, int, string, string, object[], TLog> creator = null)
             where TContext : DbContext
             where TLog : Log<TKey>
             where TLogger : EntityFrameworkLogger<TContext, TLog, TKey>
@@ -379,7 +379,7 @@ namespace ZNetCS.AspNetCore.Logging.EntityFrameworkCore
             this ILoggerFactory factory,
             IServiceProvider serviceProvider,
             LogLevel minLevel,
-            Func<int, int, string, string, TLog> creator = null)
+            Func<int, int, string, string, object[], TLog> creator = null)
             where TContext : DbContext
             where TLog : Log<TKey>
             where TLogger : EntityFrameworkLogger<TContext, TLog, TKey>
@@ -419,7 +419,7 @@ namespace ZNetCS.AspNetCore.Logging.EntityFrameworkCore
             this ILoggerFactory factory,
             IServiceProvider serviceProvider,
             Func<string, LogLevel, bool> filter,
-            Func<int, int, string, string, TLog> creator = null)
+            Func<int, int, string, string, object[], TLog> creator = null)
             where TContext : DbContext
             where TLog : Log<TKey>
             where TLogger : EntityFrameworkLogger<TContext, TLog, TKey>

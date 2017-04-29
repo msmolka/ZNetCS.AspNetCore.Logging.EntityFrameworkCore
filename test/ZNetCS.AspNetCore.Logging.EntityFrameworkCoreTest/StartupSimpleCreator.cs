@@ -61,7 +61,7 @@ namespace ZNetCS.AspNetCore.Logging.EntityFrameworkCoreTest
                     })
                 .AddEntityFramework<ContextSimple>(
                     serviceProvider,
-                    creator: (logLevel, eventId, name, message) => new Log
+                    creator: (logLevel, eventId, name, message, args) => new Log
                     {
                         TimeStamp = DateTimeOffset.Now,
                         Level = logLevel,

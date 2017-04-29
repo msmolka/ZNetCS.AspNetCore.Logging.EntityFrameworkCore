@@ -13,10 +13,12 @@ namespace ZNetCS.AspNetCore.Logging.EntityFrameworkCore
 
     using System;
     using System.Diagnostics.CodeAnalysis;
+    using System.Reflection;
 
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Logging;
+    using Microsoft.Extensions.Logging.Internal;
 
     #endregion
 
@@ -50,7 +52,7 @@ namespace ZNetCS.AspNetCore.Logging.EntityFrameworkCore
             IServiceProvider serviceProvider,
             string name,
             Func<string, LogLevel, bool> filter,
-            Func<int, int, string, string, Log> creator = null)
+            Func<int, int, string, string, object[], Log> creator = null)
             : base(serviceProvider, name, filter, creator)
         {
         }
@@ -93,7 +95,7 @@ namespace ZNetCS.AspNetCore.Logging.EntityFrameworkCore
             IServiceProvider serviceProvider,
             string name,
             Func<string, LogLevel, bool> filter,
-            Func<int, int, string, string, TLog> creator = null)
+            Func<int, int, string, string, object[], TLog> creator = null)
             : base(serviceProvider, name, filter, creator)
         {
         }
@@ -154,7 +156,7 @@ namespace ZNetCS.AspNetCore.Logging.EntityFrameworkCore
             IServiceProvider serviceProvider,
             string name,
             Func<string, LogLevel, bool> filter,
-            Func<int, int, string, string, TLog> creator = null)
+            Func<int, int, string, string, object[], TLog> creator = null)
         {
             this.serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
             this.filter = filter ?? throw new ArgumentNullException(nameof(filter));
@@ -170,7 +172,7 @@ namespace ZNetCS.AspNetCore.Logging.EntityFrameworkCore
         /// <summary>
         /// Gets the function used to create new model instance for a log.
         /// </summary>
-        protected virtual Func<int, int, string, string, TLog> Creator { get; }
+        protected virtual Func<int, int, string, string, object[], TLog> Creator { get; }
 
         /// <summary>
         /// Gets the name of the logger.
@@ -228,7 +230,15 @@ namespace ZNetCS.AspNetCore.Logging.EntityFrameworkCore
                 message += $"{Environment.NewLine}{Environment.NewLine}{exception}";
             }
 
-            this.WriteMessage(message, logLevel, eventId.Id);
+            if (state is FormattedLogValues)
+            {
+                FieldInfo fi = state.GetType().GetTypeInfo().GetField("_values", BindingFlags.NonPublic | BindingFlags.Instance);
+                this.WriteMessage(message, logLevel, eventId.Id, (object[])fi.GetValue(state));
+            }
+            else
+            {
+                this.WriteMessage(message, logLevel, eventId.Id);
+            }
         }
 
         #endregion
@@ -249,13 +259,16 @@ namespace ZNetCS.AspNetCore.Logging.EntityFrameworkCore
         /// <param name="eventId">
         /// The event id to write.
         /// </param>
-        protected virtual void WriteMessage(string message, LogLevel logLevel, int eventId)
+        /// <param name="args">
+        /// Array of arguments.
+        /// </param>
+        protected virtual void WriteMessage(string message, LogLevel logLevel, int eventId, params object[] args)
         {
             // create separate context for adding log
             using (var context = ActivatorUtilities.CreateInstance<TContext>(this.serviceProvider))
             {
                 // create new log with resolving dependency injection
-                TLog log = this.Creator((int)logLevel, eventId, this.Name, message);
+                TLog log = this.Creator((int)logLevel, eventId, this.Name, message, args);
 
                 context.Set<TLog>().Add(log);
 
@@ -278,7 +291,10 @@ namespace ZNetCS.AspNetCore.Logging.EntityFrameworkCore
         /// <param name="message">
         /// The message.
         /// </param>
-        private TLog DefaultCreator(int logLevel, int eventId, string logName, string message)
+        /// <param name="arguments">
+        /// Arguments list.
+        /// </param>
+        private TLog DefaultCreator(int logLevel, int eventId, string logName, string message, object[] arguments)
         {
             var log = ActivatorUtilities.CreateInstance<TLog>(this.serviceProvider);
 

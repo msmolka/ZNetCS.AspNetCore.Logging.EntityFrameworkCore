@@ -43,7 +43,7 @@ namespace ZNetCS.AspNetCore.Logging.EntityFrameworkCore
         /// <param name="creator">
         /// The creator used to create new instance of log.
         /// </param>
-        public EntityFrameworkLoggerProvider(IServiceProvider serviceProvider, Func<string, LogLevel, bool> filter, Func<int, int, string, string, Log> creator = null)
+        public EntityFrameworkLoggerProvider(IServiceProvider serviceProvider, Func<string, LogLevel, bool> filter, Func<int, int, string, string, object[], Log> creator = null)
             : base(serviceProvider, filter, creator)
         {
         }
@@ -79,7 +79,7 @@ namespace ZNetCS.AspNetCore.Logging.EntityFrameworkCore
         /// <param name="creator">
         /// The creator used to create new instance of log.
         /// </param>
-        public EntityFrameworkLoggerProvider(IServiceProvider serviceProvider, Func<string, LogLevel, bool> filter, Func<int, int, string, string, TLog> creator = null)
+        public EntityFrameworkLoggerProvider(IServiceProvider serviceProvider, Func<string, LogLevel, bool> filter, Func<int, int, string, string, object[], TLog> creator = null)
             : base(serviceProvider, filter, creator)
         {
         }
@@ -119,7 +119,7 @@ namespace ZNetCS.AspNetCore.Logging.EntityFrameworkCore
         /// <param name="creator">
         /// The creator used to create new instance of log.
         /// </param>
-        public EntityFrameworkLoggerProvider(IServiceProvider serviceProvider, Func<string, LogLevel, bool> filter, Func<int, int, string, string, TLog> creator = null)
+        public EntityFrameworkLoggerProvider(IServiceProvider serviceProvider, Func<string, LogLevel, bool> filter, Func<int, int, string, string, object[], TLog> creator = null)
             : base(serviceProvider, filter, creator)
         {
         }
@@ -154,7 +154,7 @@ namespace ZNetCS.AspNetCore.Logging.EntityFrameworkCore
         /// <summary>
         /// The function used to create new model instance for a log.
         /// </summary>
-        private readonly Func<int, int, string, string, TLog> creator;
+        private readonly Func<int, int, string, string, object[], TLog> creator;
 
         /// <summary>
         /// The object factory to create new logger used defined types.
@@ -192,7 +192,7 @@ namespace ZNetCS.AspNetCore.Logging.EntityFrameworkCore
         /// <param name="creator">
         /// The creator used to create new instance of log.
         /// </param>
-        public EntityFrameworkLoggerProvider(IServiceProvider serviceProvider, Func<string, LogLevel, bool> filter, Func<int, int, string, string, TLog> creator = null)
+        public EntityFrameworkLoggerProvider(IServiceProvider serviceProvider, Func<string, LogLevel, bool> filter, Func<int, int, string, string, object[], TLog> creator = null)
         {
             if (serviceProvider == null)
             {
@@ -209,7 +209,7 @@ namespace ZNetCS.AspNetCore.Logging.EntityFrameworkCore
             this.creator = creator;
             this.factory = ActivatorUtilities.CreateFactory(
                 typeof(TLogger),
-                new[] { typeof(string), typeof(Func<string, LogLevel, bool>), typeof(Func<int, int, string, string, TLog>) });
+                new[] { typeof(string), typeof(Func<string, LogLevel, bool>), typeof(Func<int, int, string, string, object[], TLog>) });
         }
 
         #endregion
