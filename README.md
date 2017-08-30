@@ -20,7 +20,7 @@ When you install the package, it should be added to your `.csproj`. Alternativel
 
 ```xml
 <ItemGroup>
-    <PackageReference Include="ZNetCS.AspNetCore.Logging.EntityFrameworkCore" Version="1.0.3" />    
+    <PackageReference Include="ZNetCS.AspNetCore.Logging.EntityFrameworkCore" Version="1.0.7" />
 </ItemGroup>
 ```
 
@@ -59,7 +59,7 @@ PM> Install-Package  Microsoft.Extensions.Logging.Filter;
             new FilterLoggerSettings
             {
                 { "Microsoft", LogLevel.None },
-                { "System", LogLevel.None }               
+                { "System", LogLevel.None }
             })
         .AddEntityFramework<ContextSimple>(serviceProvider);
 ```

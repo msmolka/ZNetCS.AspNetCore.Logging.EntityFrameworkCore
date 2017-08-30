@@ -47,7 +47,7 @@ namespace ZNetCS.AspNetCore.Logging.EntityFrameworkCoreTest
         public async Task WriteSimpleNoFilterLog()
         {
             var options = new DbContextOptionsBuilder<ContextSimple>()
-                .UseInMemoryDatabase("SimpleLogCreatorDatabase")
+                .UseInMemoryDatabase("SimpleLogNoFilterDatabase")
                 .Options;
 
             // Act
@@ -62,12 +62,11 @@ namespace ZNetCS.AspNetCore.Logging.EntityFrameworkCoreTest
             {
                 var logs = context.Logs.ToList();
 
-                Assert.AreEqual(2, logs.Count);
-                Assert.AreEqual("Handling request.", logs.First().Message);
-                Assert.AreEqual("This is my custom log", logs.First().Name);
-                Assert.AreEqual(1, logs.First().EventId);
-                Assert.AreEqual("Finished handling request.", logs.Last().Message);
-                Assert.AreEqual(2, logs.Last().EventId);
+                Assert.AreEqual(4, logs.Count);
+                Assert.AreEqual("Handling request.", logs[1].Message);
+                Assert.AreEqual(1, logs[1].EventId);
+                Assert.AreEqual("Finished handling request.", logs[2].Message);
+                Assert.AreEqual(2, logs[2].EventId);
             }
         }
 

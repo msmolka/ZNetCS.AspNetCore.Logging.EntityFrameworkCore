@@ -74,9 +74,9 @@ namespace ZNetCS.AspNetCore.Logging.EntityFrameworkCoreTest
             app.Use(
                 async (context, next) =>
                 {
-                    logger.LogInformation(1, "Handling request.");
+                    logger.LogInformation(1, "Handling request {Test}.", "Test2");
                     await next.Invoke();
-                    logger.LogInformation(2, "Finished handling request.");
+                    logger.LogInformation(2, "Finished handling request {0}.", "param 1", "param2");
                 });
 
             app.Run(async context => { await context.Response.WriteAsync("Hello World"); });

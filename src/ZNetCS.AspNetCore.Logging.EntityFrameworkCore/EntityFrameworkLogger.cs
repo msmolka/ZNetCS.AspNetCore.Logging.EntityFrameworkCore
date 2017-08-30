@@ -12,7 +12,9 @@ namespace ZNetCS.AspNetCore.Logging.EntityFrameworkCore
     #region Usings
 
     using System;
+    using System.Diagnostics;
     using System.Diagnostics.CodeAnalysis;
+    using System.Linq;
 
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.DependencyInjection;
@@ -260,6 +262,9 @@ namespace ZNetCS.AspNetCore.Logging.EntityFrameworkCore
                 context.Set<TLog>().Add(log);
 
                 context.SaveChanges();
+
+                var logs = context.Set<TLog>().ToList();
+                Debug.WriteLine(logs.Count);
             }
         }
 
