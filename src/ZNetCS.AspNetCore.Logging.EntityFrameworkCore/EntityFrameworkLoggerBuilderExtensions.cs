@@ -86,7 +86,9 @@ namespace ZNetCS.AspNetCore.Logging.EntityFrameworkCore
         /// <typeparam name="TLog">
         /// The type representing a log.
         /// </typeparam>
-        public static ILoggingBuilder AddEntityFramework<TContext, TLog>(this ILoggingBuilder builder) where TContext : DbContext where TLog : Log<int>
+        public static ILoggingBuilder AddEntityFramework<TContext, TLog>(this ILoggingBuilder builder)
+            where TContext : DbContext
+            where TLog : Log<int>
         {
             if (builder == null)
             {
@@ -144,7 +146,9 @@ namespace ZNetCS.AspNetCore.Logging.EntityFrameworkCore
         /// The type of the entity framework logger class used to log.
         /// </typeparam>
         public static ILoggingBuilder AddEntityFramework<TContext, TLog, TLogger>(this ILoggingBuilder builder)
-            where TContext : DbContext where TLog : Log<int> where TLogger : EntityFrameworkLogger<TContext, TLog>
+            where TContext : DbContext
+            where TLog : Log<int>
+            where TLogger : EntityFrameworkLogger<TContext, TLog>
         {
             if (builder == null)
             {
@@ -209,7 +213,10 @@ namespace ZNetCS.AspNetCore.Logging.EntityFrameworkCore
         /// The type of the primary key for a log.
         /// </typeparam>
         public static ILoggingBuilder AddEntityFramework<TContext, TLog, TLogger, TKey>(this ILoggingBuilder builder)
-            where TContext : DbContext where TLog : Log<TKey> where TLogger : EntityFrameworkLogger<TContext, TLog, TKey> where TKey : IEquatable<TKey>
+            where TContext : DbContext
+            where TLog : Log<TKey>
+            where TLogger : EntityFrameworkLogger<TContext, TLog, TKey>
+            where TKey : IEquatable<TKey>
         {
             if (builder == null)
             {
