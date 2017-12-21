@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="TestLoggerSimpleException.cs" company="Marcin Smółka zNET Computer Solutions">
+// <copyright file="TestLoggerBuilderSimpleException.cs" company="Marcin Smółka zNET Computer Solutions">
 //   Copyright (c) Marcin Smółka zNET Computer Solutions. All rights reserved.
 // </copyright>
 // <summary>
@@ -25,14 +25,14 @@ namespace ZNetCS.AspNetCore.Logging.EntityFrameworkCoreTest
     /// The test logger simple exception.
     /// </summary>
     [TestClass]
-    public class TestLoggerSimpleException : TestBase
+    public class TestLoggerBuilderSimpleException : TestBuilderBase
     {
         #region Constructors and Destructors
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="TestLoggerSimpleException"/> class.
+        /// Initializes a new instance of the <see cref="TestLoggerBuilderSimpleException"/> class.
         /// </summary>
-        public TestLoggerSimpleException() : base(1)
+        public TestLoggerBuilderSimpleException() : base(1)
         {
         }
 
@@ -44,10 +44,10 @@ namespace ZNetCS.AspNetCore.Logging.EntityFrameworkCoreTest
         /// The write log.
         /// </summary>
         [TestMethod]
-        public async Task WriteSimpleLogException()
+        public async Task WriteBuilderSimpleLogException()
         {
             var options = new DbContextOptionsBuilder<ContextSimple>()
-                .UseInMemoryDatabase("SimpleLogExceptionDatabase", StartupSimpleException.MemoryRoot)
+                .UseInMemoryDatabase("SimpleLogExceptionDatabase", StartupBuilderSimpleException.MemoryRoot)
                 .Options;
 
             // Act

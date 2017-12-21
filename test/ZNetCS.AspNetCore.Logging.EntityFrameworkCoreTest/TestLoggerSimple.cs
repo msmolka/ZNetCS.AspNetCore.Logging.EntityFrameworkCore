@@ -47,7 +47,7 @@ namespace ZNetCS.AspNetCore.Logging.EntityFrameworkCoreTest
         public async Task WriteSimpleLog()
         {
             var options = new DbContextOptionsBuilder<ContextSimple>()
-                .UseInMemoryDatabase("SimpleLogDatabase")
+                .UseInMemoryDatabase("SimpleLogDatabase", StartupSimple.MemoryRoot)
                 .Options;
 
             // Act

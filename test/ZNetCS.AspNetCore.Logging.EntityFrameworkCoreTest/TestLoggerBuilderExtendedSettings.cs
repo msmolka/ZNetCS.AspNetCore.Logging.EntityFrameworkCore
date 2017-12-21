@@ -1,9 +1,9 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="TestLoggerSimpleException.cs" company="Marcin Smółka zNET Computer Solutions">
+// <copyright file="TestLoggerBuilderExtendedSettings.cs" company="Marcin Smółka zNET Computer Solutions">
 //   Copyright (c) Marcin Smółka zNET Computer Solutions. All rights reserved.
 // </copyright>
 // <summary>
-//   The test logger simple exception.
+//   The test logger extended.
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -22,17 +22,17 @@ namespace ZNetCS.AspNetCore.Logging.EntityFrameworkCoreTest
     #endregion
 
     /// <summary>
-    /// The test logger simple exception.
+    /// The test logger extended.
     /// </summary>
     [TestClass]
-    public class TestLoggerSimpleException : TestBase
+    public class TestLoggerBuilderExtendedSettings : TestBuilderBase
     {
         #region Constructors and Destructors
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="TestLoggerSimpleException"/> class.
+        /// Initializes a new instance of the <see cref="TestLoggerBuilderExtendedSettings"/> class.
         /// </summary>
-        public TestLoggerSimpleException() : base(1)
+        public TestLoggerBuilderExtendedSettings() : base(6)
         {
         }
 
@@ -44,10 +44,10 @@ namespace ZNetCS.AspNetCore.Logging.EntityFrameworkCoreTest
         /// The write log.
         /// </summary>
         [TestMethod]
-        public async Task WriteSimpleLogException()
+        public async Task WriteBuilderExtendedSettingsLog()
         {
-            var options = new DbContextOptionsBuilder<ContextSimple>()
-                .UseInMemoryDatabase("SimpleLogExceptionDatabase", StartupSimpleException.MemoryRoot)
+            var options = new DbContextOptionsBuilder<ContextExtended>()
+                .UseInMemoryDatabase("ExtendedLogDatabase", StartupBuilderExtendedSettings.MemoryRoot)
                 .Options;
 
             // Act
@@ -58,13 +58,19 @@ namespace ZNetCS.AspNetCore.Logging.EntityFrameworkCoreTest
             response.EnsureSuccessStatusCode();
 
             // Use a separate instance of the context to verify correct data was saved to database
-            using (var context = new ContextSimple(options))
+            using (var context = new ContextExtended(options))
             {
                 var logs = context.Logs.ToList();
 
-                Assert.AreEqual(1, logs.Count);
-                Assert.AreEqual(true, logs.First().Message.StartsWith("Exception message"));
+                Assert.AreEqual(2, logs.Count);
+                Assert.AreEqual("Handling request.", logs.First().Message);
                 Assert.AreEqual(1, logs.First().EventId);
+                Assert.AreEqual("Test User", logs.First().User);
+                Assert.AreEqual("Test Browser", logs.First().Browser);
+                Assert.AreEqual("localhost", logs.First().Host);
+                Assert.AreEqual("/", logs.First().Path);
+                Assert.AreEqual("Finished handling request.", logs.Last().Message);
+                Assert.AreEqual(2, logs.Last().EventId);
             }
         }
 

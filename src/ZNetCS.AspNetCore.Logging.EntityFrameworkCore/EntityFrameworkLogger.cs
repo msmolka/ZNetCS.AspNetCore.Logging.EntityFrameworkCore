@@ -114,7 +114,7 @@ namespace ZNetCS.AspNetCore.Logging.EntityFrameworkCore
     /// The type of the primary key for a log.
     /// </typeparam>
     [SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1402:FileMayOnlyContainASingleClass", Justification = "OK")]
-    public class EntityFrameworkLogger<TContext, TLog, TKey> : IEntityFrameworkLogger
+    public class EntityFrameworkLogger<TContext, TLog, TKey> : ILogger
         where TContext : DbContext
         where TLog : Log<TKey>
         where TKey : IEquatable<TKey>

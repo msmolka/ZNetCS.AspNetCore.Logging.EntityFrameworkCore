@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="StartupExtended.cs" company="Marcin Smółka zNET Computer Solutions">
+// <copyright file="StartupBuilderExtended.cs" company="Marcin Smółka zNET Computer Solutions">
 //   Copyright (c) Marcin Smółka zNET Computer Solutions. All rights reserved.
 // </copyright>
 // <summary>
@@ -21,14 +21,12 @@ namespace ZNetCS.AspNetCore.Logging.EntityFrameworkCoreTest
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Logging;
 
-    using ZNetCS.AspNetCore.Logging.EntityFrameworkCore;
-
     #endregion
 
     /// <summary>
     /// The startup.
     /// </summary>
-    public class StartupExtended
+    public class StartupBuilderExtended
     {
         #region Static Fields
 
@@ -58,19 +56,6 @@ namespace ZNetCS.AspNetCore.Logging.EntityFrameworkCoreTest
         /// </param>
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, IServiceProvider serviceProvider)
         {
-            loggerFactory.AddConsole();
-            loggerFactory.AddDebug();
-
-            loggerFactory
-                .WithFilter(
-                    new FilterLoggerSettings
-                    {
-                        { "Microsoft", LogLevel.None },
-                        { "System", LogLevel.None },
-                        { "ZNetCS", LogLevel.Information }
-                    })
-                .AddEntityFramework<ContextExtended, ExtendedLog>(serviceProvider);
-
             ILogger logger = loggerFactory.CreateLogger("Configure");
             app.Use(
                 async (context, next) =>

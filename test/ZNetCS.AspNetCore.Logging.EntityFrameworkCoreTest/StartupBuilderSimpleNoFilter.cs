@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="StartupExtended.cs" company="Marcin Smółka zNET Computer Solutions">
+// <copyright file="StartupBuilderSimpleNoFilter.cs" company="Marcin Smółka zNET Computer Solutions">
 //   Copyright (c) Marcin Smółka zNET Computer Solutions. All rights reserved.
 // </copyright>
 // <summary>
@@ -21,14 +21,12 @@ namespace ZNetCS.AspNetCore.Logging.EntityFrameworkCoreTest
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Logging;
 
-    using ZNetCS.AspNetCore.Logging.EntityFrameworkCore;
-
     #endregion
 
     /// <summary>
     /// The startup.
     /// </summary>
-    public class StartupExtended
+    public class StartupBuilderSimpleNoFilter
     {
         #region Static Fields
 
@@ -58,19 +56,6 @@ namespace ZNetCS.AspNetCore.Logging.EntityFrameworkCoreTest
         /// </param>
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, IServiceProvider serviceProvider)
         {
-            loggerFactory.AddConsole();
-            loggerFactory.AddDebug();
-
-            loggerFactory
-                .WithFilter(
-                    new FilterLoggerSettings
-                    {
-                        { "Microsoft", LogLevel.None },
-                        { "System", LogLevel.None },
-                        { "ZNetCS", LogLevel.Information }
-                    })
-                .AddEntityFramework<ContextExtended, ExtendedLog>(serviceProvider);
-
             ILogger logger = loggerFactory.CreateLogger("Configure");
             app.Use(
                 async (context, next) =>
@@ -94,10 +79,7 @@ namespace ZNetCS.AspNetCore.Logging.EntityFrameworkCoreTest
             services.AddEntityFrameworkInMemoryDatabase();
 
             // Add framework services.
-            services.AddDbContext<ContextExtended>(options => options.UseInMemoryDatabase("ExtendedLogDatabase", MemoryRoot));
-
-            // requires for http context access.
-            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            services.AddDbContext<ContextSimple>(options => options.UseInMemoryDatabase("SimpleLogNoFilterDatabase", MemoryRoot));
         }
 
         #endregion

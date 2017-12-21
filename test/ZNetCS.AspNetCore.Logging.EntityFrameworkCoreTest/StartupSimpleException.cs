@@ -17,6 +17,7 @@ namespace ZNetCS.AspNetCore.Logging.EntityFrameworkCoreTest
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Http;
     using Microsoft.EntityFrameworkCore;
+    using Microsoft.EntityFrameworkCore.Storage;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Logging;
 
@@ -29,6 +30,15 @@ namespace ZNetCS.AspNetCore.Logging.EntityFrameworkCoreTest
     /// </summary>
     public class StartupSimpleException
     {
+        #region Static Fields
+
+        /// <summary>
+        /// The memory root.
+        /// </summary>
+        public static readonly InMemoryDatabaseRoot MemoryRoot = new InMemoryDatabaseRoot();
+
+        #endregion
+
         #region Public Methods
 
         /// <summary>
@@ -92,7 +102,7 @@ namespace ZNetCS.AspNetCore.Logging.EntityFrameworkCoreTest
             services.AddEntityFrameworkInMemoryDatabase();
 
             // Add framework services.
-            services.AddDbContext<ContextSimple>(options => options.UseInMemoryDatabase("SimpleLogExceptionDatabase"));
+            services.AddDbContext<ContextSimple>(options => options.UseInMemoryDatabase("SimpleLogExceptionDatabase", MemoryRoot));
         }
 
         #endregion

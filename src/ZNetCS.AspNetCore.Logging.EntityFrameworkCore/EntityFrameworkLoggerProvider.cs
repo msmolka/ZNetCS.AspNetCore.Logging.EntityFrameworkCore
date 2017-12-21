@@ -3,7 +3,7 @@
 //   Copyright (c) Marcin Smółka zNET Computer Solutions. All rights reserved.
 // </copyright>
 // <summary>
-//   Represents a new instance of an entity framework logger provider for the specified log.
+//   Defines the EntityFrameworkLoggerProvider type.
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -17,15 +17,12 @@ namespace ZNetCS.AspNetCore.Logging.EntityFrameworkCore
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Logging;
+    using Microsoft.Extensions.Options;
 
     #endregion
 
-    /// <summary>
-    /// Represents a new instance of an entity framework logger provider for the specified log.
-    /// </summary>
-    /// <typeparam name="TContext">
-    /// The type of the data context class used to access the store.
-    /// </typeparam>
+    /// <inheritdoc/>
+    [ProviderAlias("EntityFramework")]
     public class EntityFrameworkLoggerProvider<TContext> : EntityFrameworkLoggerProvider<TContext, Log>
         where TContext : DbContext
     {
@@ -48,18 +45,24 @@ namespace ZNetCS.AspNetCore.Logging.EntityFrameworkCore
         {
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="EntityFrameworkLoggerProvider{TContext}"/> class.
+        /// </summary>
+        /// <param name="serviceProvider">
+        /// The service provider.
+        /// </param>
+        /// <param name="options">
+        /// The options.
+        /// </param>
+        public EntityFrameworkLoggerProvider(IServiceProvider serviceProvider, IOptions<EntityFrameworkLoggerOptions> options) : base(serviceProvider, options)
+        {
+        }
+
         #endregion
     }
 
-    /// <summary>
-    /// Represents a new instance of an entity framework logger provider for the specified log.
-    /// </summary>
-    /// <typeparam name="TContext">
-    /// The type of the data context class used to access the store.
-    /// </typeparam>
-    /// <typeparam name="TLog">
-    /// The type representing a log.
-    /// </typeparam>
+    /// <inheritdoc/>
+    [ProviderAlias("EntityFramework")]
     [SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1402:FileMayOnlyContainASingleClass", Justification = "OK")]
     public class EntityFrameworkLoggerProvider<TContext, TLog> : EntityFrameworkLoggerProvider<TContext, TLog, EntityFrameworkLogger<TContext, TLog>>
         where TLog : Log<int>
@@ -84,21 +87,24 @@ namespace ZNetCS.AspNetCore.Logging.EntityFrameworkCore
         {
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="EntityFrameworkLoggerProvider{TContext,TLog}"/> class.
+        /// </summary>
+        /// <param name="serviceProvider">
+        /// The service provider.
+        /// </param>
+        /// <param name="options">
+        /// The options.
+        /// </param>
+        public EntityFrameworkLoggerProvider(IServiceProvider serviceProvider, IOptions<EntityFrameworkLoggerOptions<TLog>> options) : base(serviceProvider, options)
+        {
+        }
+
         #endregion
     }
 
-    /// <summary>
-    /// Represents a new instance of an entity framework logger provider for the specified log.
-    /// </summary>
-    /// <typeparam name="TContext">
-    /// The type of the data context class used to access the store.
-    /// </typeparam>
-    /// <typeparam name="TLog">
-    /// The type representing a log.
-    /// </typeparam>
-    /// <typeparam name="TLogger">
-    /// The type of the entity framework logger class used to log.
-    /// </typeparam>
+    /// <inheritdoc/>
+    [ProviderAlias("EntityFramework")]
     [SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1402:FileMayOnlyContainASingleClass", Justification = "OK")]
     public class EntityFrameworkLoggerProvider<TContext, TLog, TLogger> : EntityFrameworkLoggerProvider<TContext, TLog, TLogger, int>
         where TLogger : EntityFrameworkLogger<TContext, TLog>
@@ -124,6 +130,19 @@ namespace ZNetCS.AspNetCore.Logging.EntityFrameworkCore
         {
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="EntityFrameworkLoggerProvider{TContext,TLog,TLogger}"/> class.
+        /// </summary>
+        /// <param name="serviceProvider">
+        /// The service provider.
+        /// </param>
+        /// <param name="options">
+        /// The options.
+        /// </param>
+        public EntityFrameworkLoggerProvider(IServiceProvider serviceProvider, IOptions<EntityFrameworkLoggerOptions<TLog>> options) : base(serviceProvider, options)
+        {
+        }
+
         #endregion
     }
 
@@ -142,8 +161,9 @@ namespace ZNetCS.AspNetCore.Logging.EntityFrameworkCore
     /// <typeparam name="TKey">
     /// The type of the primary key for a log.
     /// </typeparam>
+    [ProviderAlias("EntityFramework")]
     [SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1402:FileMayOnlyContainASingleClass", Justification = "OK")]
-    public class EntityFrameworkLoggerProvider<TContext, TLog, TLogger, TKey> : IEntityFrameworkLoggerProvider
+    public class EntityFrameworkLoggerProvider<TContext, TLog, TLogger, TKey> : EntityFrameworkLoggerProviderBase
         where TContext : DbContext
         where TLog : Log<TKey>
         where TLogger : EntityFrameworkLogger<TContext, TLog, TKey>
@@ -171,11 +191,6 @@ namespace ZNetCS.AspNetCore.Logging.EntityFrameworkCore
         /// </summary>
         private readonly IServiceProvider serviceProvider;
 
-        /// <summary>
-        /// The disposed flag.
-        /// </summary>
-        private bool disposed;
-
         #endregion
 
         #region Constructors and Destructors
@@ -194,19 +209,30 @@ namespace ZNetCS.AspNetCore.Logging.EntityFrameworkCore
         /// </param>
         public EntityFrameworkLoggerProvider(IServiceProvider serviceProvider, Func<string, LogLevel, bool> filter, Func<int, int, string, string, TLog> creator = null)
         {
-            if (serviceProvider == null)
-            {
-                throw new ArgumentNullException(nameof(serviceProvider));
-            }
-
-            if (filter == null)
-            {
-                throw new ArgumentNullException(nameof(filter));
-            }
-
-            this.serviceProvider = serviceProvider;
-            this.filter = filter;
+            this.serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
+            this.filter = filter ?? throw new ArgumentNullException(nameof(filter));
             this.creator = creator;
+            this.factory = ActivatorUtilities.CreateFactory(
+                typeof(TLogger),
+                new[] { typeof(string), typeof(Func<string, LogLevel, bool>), typeof(Func<int, int, string, string, TLog>) });
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="EntityFrameworkLoggerProvider{TContext,TLog,TLogger,TKey}"/> class.
+        /// </summary>
+        /// <param name="serviceProvider">
+        /// The service provider.
+        /// </param>
+        /// <param name="options">
+        /// The options.
+        /// </param>
+        public EntityFrameworkLoggerProvider(IServiceProvider serviceProvider, IOptions<EntityFrameworkLoggerOptions<TLog>> options)
+        {
+            this.serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
+
+            // Filter would be applied on LoggerFactory level
+            this.filter = TrueFilter;
+            this.creator = options.Value.Creator;
             this.factory = ActivatorUtilities.CreateFactory(
                 typeof(TLogger),
                 new[] { typeof(string), typeof(Func<string, LogLevel, bool>), typeof(Func<int, int, string, string, TLog>) });
@@ -214,56 +240,13 @@ namespace ZNetCS.AspNetCore.Logging.EntityFrameworkCore
 
         #endregion
 
-        #region Implemented Interfaces
+        #region Public Methods
 
-        #region IDisposable
-
-        /// <summary>
-        /// Clean up any resources being used.
-        /// </summary>
-        public void Dispose()
-        {
-            this.Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        #endregion
-
-        #region ILoggerProvider
-
-        /// <inheritdoc />
-        public virtual ILogger CreateLogger(string categoryName)
+        /// <inheritdoc/>
+        public override ILogger CreateLogger(string categoryName)
         {
             this.ThrowIfDisposed();
             return (ILogger)this.factory(this.serviceProvider, new object[] { categoryName, this.filter, this.creator });
-        }
-
-        #endregion
-
-        #endregion
-
-        #region Methods
-
-        /// <summary>
-        /// Clean up any resources being used.
-        /// </summary>
-        /// <param name="disposing">
-        /// True if managed resources should be disposed; otherwise, false.
-        /// </param>
-        protected virtual void Dispose(bool disposing)
-        {
-            this.disposed = true;
-        }
-
-        /// <summary>
-        /// Throws if this class has been disposed.
-        /// </summary>
-        protected void ThrowIfDisposed()
-        {
-            if (this.disposed)
-            {
-                throw new ObjectDisposedException(this.GetType().Name);
-            }
         }
 
         #endregion

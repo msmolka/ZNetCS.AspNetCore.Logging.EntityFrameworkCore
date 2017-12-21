@@ -1,9 +1,9 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="TestLoggerSimpleException.cs" company="Marcin Smółka zNET Computer Solutions">
+// <copyright file="TestLoggerBuilderSimpleNoFilter.cs" company="Marcin Smółka zNET Computer Solutions">
 //   Copyright (c) Marcin Smółka zNET Computer Solutions. All rights reserved.
 // </copyright>
 // <summary>
-//   The test logger simple exception.
+//   The test logger simple.
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -22,17 +22,17 @@ namespace ZNetCS.AspNetCore.Logging.EntityFrameworkCoreTest
     #endregion
 
     /// <summary>
-    /// The test logger simple exception.
+    /// The test logger simple.
     /// </summary>
     [TestClass]
-    public class TestLoggerSimpleException : TestBase
+    public class TestLoggerBuilderSimpleNoFilter : TestBuilderBase
     {
         #region Constructors and Destructors
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="TestLoggerSimpleException"/> class.
+        /// Initializes a new instance of the <see cref="TestLoggerBuilderSimpleNoFilter"/> class.
         /// </summary>
-        public TestLoggerSimpleException() : base(1)
+        public TestLoggerBuilderSimpleNoFilter() : base(4)
         {
         }
 
@@ -44,10 +44,10 @@ namespace ZNetCS.AspNetCore.Logging.EntityFrameworkCoreTest
         /// The write log.
         /// </summary>
         [TestMethod]
-        public async Task WriteSimpleLogException()
+        public async Task WriteBuilderSimpleNoFilterLog()
         {
             var options = new DbContextOptionsBuilder<ContextSimple>()
-                .UseInMemoryDatabase("SimpleLogExceptionDatabase", StartupSimpleException.MemoryRoot)
+                .UseInMemoryDatabase("SimpleLogNoFilterDatabase", StartupBuilderSimpleNoFilter.MemoryRoot)
                 .Options;
 
             // Act
@@ -62,9 +62,10 @@ namespace ZNetCS.AspNetCore.Logging.EntityFrameworkCoreTest
             {
                 var logs = context.Logs.ToList();
 
-                Assert.AreEqual(1, logs.Count);
-                Assert.AreEqual(true, logs.First().Message.StartsWith("Exception message"));
-                Assert.AreEqual(1, logs.First().EventId);
+                Assert.AreEqual("Handling request.", logs[1].Message);
+                Assert.AreEqual(1, logs[1].EventId);
+                Assert.AreEqual("Finished handling request.", logs[2].Message);
+                Assert.AreEqual(2, logs[2].EventId);
             }
         }
 

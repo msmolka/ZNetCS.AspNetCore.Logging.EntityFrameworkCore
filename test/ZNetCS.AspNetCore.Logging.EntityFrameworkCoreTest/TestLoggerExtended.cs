@@ -47,7 +47,7 @@ namespace ZNetCS.AspNetCore.Logging.EntityFrameworkCoreTest
         public async Task WriteExtendedLog()
         {
             var options = new DbContextOptionsBuilder<ContextExtended>()
-                .UseInMemoryDatabase("ExtendedLogDatabase")
+                .UseInMemoryDatabase("ExtendedLogDatabase", StartupExtended.MemoryRoot)
                 .Options;
 
             // Act
