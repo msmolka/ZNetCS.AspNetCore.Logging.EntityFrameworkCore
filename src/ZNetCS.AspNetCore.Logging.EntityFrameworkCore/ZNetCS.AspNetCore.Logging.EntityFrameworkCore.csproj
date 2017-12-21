@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Description>This is Entity Framework Core logger and logger provider. A small package to allow store logs in any data store using Entity Framework Core.</Description>
     <Copyright>Marcin Smółka zNET Computer Solutions</Copyright>
-    <VersionPrefix>2.1.0</VersionPrefix>
+    <VersionPrefix>2.0.0</VersionPrefix>
     <Authors>Marcin Smółka</Authors>
     <TargetFrameworks>net461;netstandard2.0</TargetFrameworks>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
