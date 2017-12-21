@@ -25,7 +25,7 @@ When you install the package, it should be added to your `.csproj`. Alternativel
 ```
 
 As from ASP.NET Core 2.0 version, the configuration of logging was changed. Now it should be configure with `WebHostBuilder`
-See [Introduction to logging in ASP.NET Core](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/logging/?tabs=aspnetcore2x)
+See: [Introduction to logging in ASP.NET Core](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/logging/?tabs=aspnetcore2x) for more details.
 
 ```csharp
 using ZNetCS.AspNetCore.Logging.EntityFrameworkCore;
