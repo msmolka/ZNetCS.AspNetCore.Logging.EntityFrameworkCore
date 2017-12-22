@@ -91,52 +91,55 @@ namespace ZNetCS.AspNetCore.Logging.EntityFrameworkCoreTest
                             }));
                     break;
                 case 3:
-                    this.Server = new TestServer(this.CreateBuilder<StartupBuilderSimpleCreator>().ConfigureLogging(
-                        (hostingContext, logging) =>
-                        {
-                            logging.AddConsole();
-                            logging.AddDebug();
+                    this.Server = new TestServer(
+                        this.CreateBuilder<StartupBuilderSimpleCreator>().ConfigureLogging(
+                            (hostingContext, logging) =>
+                            {
+                                logging.AddConsole();
+                                logging.AddDebug();
 
-                            logging.AddFilter<EntityFrameworkLoggerProvider<ContextSimple>>("Microsoft", LogLevel.None);
-                            logging.AddFilter<EntityFrameworkLoggerProvider<ContextSimple>>("System", LogLevel.None);
-                            logging.AddFilter<EntityFrameworkLoggerProvider<ContextSimple>>("ZNetCS", LogLevel.Information);
+                                logging.AddFilter<EntityFrameworkLoggerProvider<ContextSimple>>("Microsoft", LogLevel.None);
+                                logging.AddFilter<EntityFrameworkLoggerProvider<ContextSimple>>("System", LogLevel.None);
+                                logging.AddFilter<EntityFrameworkLoggerProvider<ContextSimple>>("ZNetCS", LogLevel.Information);
 
-                            logging.AddEntityFramework<ContextSimple>(
-                                opts =>
-                                {
-                                    opts.Creator = (logLevel, eventId, name, message) => new Log
+                                logging.AddEntityFramework<ContextSimple>(
+                                    opts =>
                                     {
-                                        TimeStamp = DateTimeOffset.Now,
-                                        Level = logLevel,
-                                        EventId = eventId,
-                                        Name = "This is my custom log",
-                                        Message = message
-                                    };
-                                });
-                        }));
+                                        opts.Creator = (logLevel, eventId, name, message) => new Log
+                                        {
+                                            TimeStamp = DateTimeOffset.Now,
+                                            Level = logLevel,
+                                            EventId = eventId,
+                                            Name = "This is my custom log",
+                                            Message = message
+                                        };
+                                    });
+                            }));
 
                     break;
                 case 4:
-                    this.Server = new TestServer(this.CreateBuilder<StartupBuilderSimpleNoFilter>().ConfigureLogging(
-                        (hostingContext, logging) =>
-                        {
-                            logging.AddConsole();
-                            logging.AddDebug();
+                    this.Server = new TestServer(
+                        this.CreateBuilder<StartupBuilderSimpleNoFilter>().ConfigureLogging(
+                            (hostingContext, logging) =>
+                            {
+                                logging.AddConsole();
+                                logging.AddDebug();
 
-                            logging.AddEntityFramework<ContextSimple>();
-                        }));
+                                logging.AddEntityFramework<ContextSimple>();
+                            }));
                     break;
 
                 case 5:
-                    this.Server = new TestServer(this.CreateBuilder<StartupBuilderSimpleSettings>().ConfigureLogging(
-                        (hostingContext, logging) =>
-                        {
-                            logging.AddConfiguration(hostingContext.Configuration.GetSection("Logging"));
-                            logging.AddConsole();
-                            logging.AddDebug();
+                    this.Server = new TestServer(
+                        this.CreateBuilder<StartupBuilderSimpleSettings>().ConfigureLogging(
+                            (hostingContext, logging) =>
+                            {
+                                logging.AddConfiguration(hostingContext.Configuration.GetSection("Logging"));
+                                logging.AddConsole();
+                                logging.AddDebug();
 
-                            logging.AddEntityFramework<ContextSimple>();
-                        }));
+                                logging.AddEntityFramework<ContextSimple>();
+                            }));
                     break;
 
                 case 6:

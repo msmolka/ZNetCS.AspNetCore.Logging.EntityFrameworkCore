@@ -264,7 +264,7 @@ public static void Main(string[] args)
             // ...
             //
 
-            logging.AddEntityFramework<ContextSimple>(
+            logging.AddEntityFramework<MyDbContent>(
                 opts =>
                 {
                     opts.Creator = (logLevel, eventId, name, message) => new Log
@@ -321,7 +321,7 @@ PM> Install-Package  Microsoft.Extensions.Logging.Filter;
                 { "Microsoft", LogLevel.None },
                 { "System", LogLevel.None }
             })
-        .AddEntityFramework<ContextSimple>(serviceProvider);
+        .AddEntityFramework<MyDbContent>(serviceProvider);
 ```
 
 For using extended logging change in `Configure` call of `Startup`: 

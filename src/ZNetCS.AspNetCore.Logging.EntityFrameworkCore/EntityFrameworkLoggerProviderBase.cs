@@ -45,9 +45,6 @@ namespace ZNetCS.AspNetCore.Logging.EntityFrameworkCore
         #region IDisposable
 
         /// <inheritdoc/>
-        /// <summary>
-        /// Clean up any resources being used.
-        /// </summary>
         public void Dispose()
         {
             this.Dispose(true);
