@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Description>This is Entity Framework Core logger and logger provider. A small package to allow store logs in any data store using Entity Framework Core.</Description>
     <Copyright>Marcin Smółka zNET Computer Solutions</Copyright>
-    <VersionPrefix>2.0.0</VersionPrefix>
+    <VersionPrefix>2.0.1</VersionPrefix>
     <Authors>Marcin Smółka</Authors>
     <TargetFrameworks>net461;netstandard2.0</TargetFrameworks>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
@@ -12,6 +12,7 @@
     <PackageTags>aspnetcore;aspnetcoremvc;logging;loggerprovider;logger;ASP.NET;MVC;ef;entity-framework-core;Entity Framework Core;netcore</PackageTags>
     <PackageProjectUrl>https://github.com/msmolka/ZNetCS.AspNetCore.Logging.EntityFrameworkCore</PackageProjectUrl>
     <PackageLicenseUrl>https://raw.githubusercontent.com/msmolka/ZNetCS.AspNetCore.Logging.EntityFrameworkCore/master/LICENSE</PackageLicenseUrl>
+    <PackageReleaseNotes></PackageReleaseNotes>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/msmolka/ZNetCS.AspNetCore.Logging.EntityFrameworkCore</RepositoryUrl>
     <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
@@ -36,7 +37,7 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="2.0.1" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="2.0.0" />
-    <PackageReference Include="StyleCop.Analyzers" Version="1.1.0-beta004">
+    <PackageReference Include="StyleCop.Analyzers" Version="1.1.0-beta006">
       <PrivateAssets>All</PrivateAssets>
     </PackageReference>
   </ItemGroup>
