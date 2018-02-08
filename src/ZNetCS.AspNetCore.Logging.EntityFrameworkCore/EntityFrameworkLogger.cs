@@ -252,7 +252,7 @@ namespace ZNetCS.AspNetCore.Logging.EntityFrameworkCore
             using (var scope = this.serviceProvider.CreateScope())
             {
                 // create separate DbContext for adding log
-                // normally we should rely on scope context, but in rare scenarious when DbContext is
+                // normally we should rely on scope context, but in rare scenarios when DbContext is
                 // registered as singleton, we should avoid this.
                 using (var context = ActivatorUtilities.CreateInstance<TContext>(scope.ServiceProvider))
                 {
