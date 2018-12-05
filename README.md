@@ -298,10 +298,10 @@ using ZNetCS.AspNetCore.Logging.EntityFrameworkCore;
 ```
 
 ```csharp
-public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, IServiceProvider serviceProvider)
+public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
 {
     // MyDbContext is registered in ConfigureServices Entity Framework Core application context
-    loggerFactory.AddEntityFramework<MyDbContent>(serviceProvider);
+    loggerFactory.AddEntityFramework<MyDbContent>(app.ApplicationServices);
 
     // other middleware e.g. MVC etc
 }
@@ -321,16 +321,16 @@ PM> Install-Package  Microsoft.Extensions.Logging.Filter;
                 { "Microsoft", LogLevel.None },
                 { "System", LogLevel.None }
             })
-        .AddEntityFramework<MyDbContent>(serviceProvider);
+        .AddEntityFramework<MyDbContent>(app.ApplicationServices);
 ```
 
 For using extended logging change in `Configure` call of `Startup`: 
 
 ```csharp
-public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, IServiceProvider serviceProvider)
+public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
 {
     // MyDbContext is registered in ConfigureServices Entity Framework Core application context
-    loggerFactory.AddEntityFramework<MyDbContext, ExtendedLog>(serviceProvider);
+    loggerFactory.AddEntityFramework<MyDbContext, ExtendedLog>(app.ApplicationServices);
 
     // other middleware e.g. MVC etc
 }
@@ -340,12 +340,12 @@ public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerF
 Usage of ustom creator method (without resolving dependencies). This can be done by extending `loggerFactory.AddEntityFramework` call.
 
 ```csharp
-public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, IServiceProvider serviceProvider)
+public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
 {
     // MyDbContext is registered in ConfigureServices Entity Framework Core application context
     loggerFactory 
         .AddEntityFramework<MyDbContext>(
-            serviceProvider,
+            app.ApplicationServices,
             creator: (logLevel, eventId, name, message) => new Log
             {
                 TimeStamp = DateTimeOffset.Now,
