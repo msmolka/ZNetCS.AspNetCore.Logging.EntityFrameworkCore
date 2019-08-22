@@ -261,7 +261,14 @@ namespace ZNetCS.AspNetCore.Logging.EntityFrameworkCore
 
                     context.Set<TLog>().Add(log);
 
-                    context.SaveChanges();
+                    try
+                    {
+                        context.SaveChanges();
+                    }
+                    catch
+                    {
+                        // if db cannot save error we should ignore it. To not cause additional connection errors.
+                    }
                 }
             }
         }

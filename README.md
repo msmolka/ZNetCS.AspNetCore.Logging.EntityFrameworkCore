@@ -20,12 +20,14 @@ When you install the package, it should be added to your `.csproj`. Alternativel
 
 ```xml
 <ItemGroup>
-    <PackageReference Include="ZNetCS.AspNetCore.Logging.EntityFrameworkCore" Version="2.0.1" />
+    <PackageReference Include="ZNetCS.AspNetCore.Logging.EntityFrameworkCore" Version="2.0.2" />
 </ItemGroup>
 ```
 
 As from ASP.NET Core 2.0 version, the configuration of logging was changed. Now it should be configure with `WebHostBuilder`
 See: [Introduction to logging in ASP.NET Core](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/logging/?tabs=aspnetcore2x) for more details.
+
+As from version 2.0.2 there is silent error handling on logger SaveChanges(). To avoid Db error having impact on application.
 
 ```csharp
 using ZNetCS.AspNetCore.Logging.EntityFrameworkCore;
