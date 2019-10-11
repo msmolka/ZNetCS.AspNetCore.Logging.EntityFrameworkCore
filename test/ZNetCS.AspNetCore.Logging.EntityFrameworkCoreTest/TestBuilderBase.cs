@@ -183,7 +183,7 @@ namespace ZNetCS.AspNetCore.Logging.EntityFrameworkCoreTest
         /// </typeparam>
         private IWebHostBuilder CreateBuilder<TStartup>() where TStartup : class
         {
-            var path = Path.GetDirectoryName(typeof(StartupSimple).GetTypeInfo().Assembly.Location);
+            var path = Path.GetDirectoryName(typeof(TStartup).GetTypeInfo().Assembly.Location);
 
             // ReSharper disable PossibleNullReferenceException
             var di = new DirectoryInfo(path).Parent.Parent.Parent;

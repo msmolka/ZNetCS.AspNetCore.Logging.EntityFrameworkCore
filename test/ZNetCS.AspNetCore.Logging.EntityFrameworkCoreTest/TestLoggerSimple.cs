@@ -7,6 +7,7 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
+#if NETCOREAPP2_0
 namespace ZNetCS.AspNetCore.Logging.EntityFrameworkCoreTest
 {
     #region Usings
@@ -73,3 +74,4 @@ namespace ZNetCS.AspNetCore.Logging.EntityFrameworkCoreTest
         #endregion
     }
 }
+#endif

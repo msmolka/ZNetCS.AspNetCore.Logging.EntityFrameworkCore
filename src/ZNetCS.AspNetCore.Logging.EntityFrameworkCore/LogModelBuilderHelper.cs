@@ -66,6 +66,11 @@ namespace ZNetCS.AspNetCore.Logging.EntityFrameworkCore
             where TLog : Log<TKey>
             where TKey : IEquatable<TKey>
         {
+            if (builder == null)
+            {
+                throw new ArgumentNullException(nameof(builder));
+            }
+
             builder.HasKey(r => r.Id);
 
             builder.Property(r => r.Name).HasMaxLength(255);

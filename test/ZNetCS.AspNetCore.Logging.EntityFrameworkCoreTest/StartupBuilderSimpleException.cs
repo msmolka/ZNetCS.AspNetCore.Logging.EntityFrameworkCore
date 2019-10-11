@@ -45,16 +45,10 @@ namespace ZNetCS.AspNetCore.Logging.EntityFrameworkCoreTest
         /// <param name="app">
         /// The application builder.
         /// </param>
-        /// <param name="env">
-        /// The hosting environment.
-        /// </param>
         /// <param name="loggerFactory">
         /// The logger factory.
         /// </param>
-        /// <param name="serviceProvider">
-        /// The service provider.
-        /// </param>
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, IServiceProvider serviceProvider)
+        public void Configure(IApplicationBuilder app, ILoggerFactory loggerFactory)
         {
             ILogger logger = loggerFactory.CreateLogger("Configure");
 

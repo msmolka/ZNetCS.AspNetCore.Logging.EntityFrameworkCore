@@ -228,6 +228,11 @@ namespace ZNetCS.AspNetCore.Logging.EntityFrameworkCore
         /// </param>
         public EntityFrameworkLoggerProvider(IServiceProvider serviceProvider, IOptions<EntityFrameworkLoggerOptions<TLog>> options)
         {
+            if (options == null)
+            {
+                throw new ArgumentNullException(nameof(options));
+            }
+
             this.serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
 
             // Filter would be applied on LoggerFactory level

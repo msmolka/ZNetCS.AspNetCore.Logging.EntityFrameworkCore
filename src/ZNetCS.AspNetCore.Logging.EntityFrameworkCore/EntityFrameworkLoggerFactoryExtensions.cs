@@ -21,6 +21,7 @@ namespace ZNetCS.AspNetCore.Logging.EntityFrameworkCore
     /// <summary>
     /// Extension methods for the <see cref="Microsoft.Extensions.Logging.ILoggerFactory"/> class.
     /// </summary>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "ILoggerFactory.Dispose() disposes all providers.")]
     public static class EntityFrameworkLoggerFactoryExtensions
     {
         #region Public Methods
@@ -46,9 +47,7 @@ namespace ZNetCS.AspNetCore.Logging.EntityFrameworkCore
             IServiceProvider serviceProvider,
             Func<int, int, string, string, Log> creator = null)
             where TContext : DbContext
-        {
-            return AddEntityFramework<TContext>(factory, serviceProvider, LogLevel.Information, creator);
-        }
+            => AddEntityFramework<TContext>(factory, serviceProvider, LogLevel.Information, creator);
 
         /// <summary>
         /// Adds an entity framework logger that is enabled for <see cref="Microsoft.Extensions.Logging.LogLevel"/>s of minLevel
@@ -104,6 +103,11 @@ namespace ZNetCS.AspNetCore.Logging.EntityFrameworkCore
             Func<int, int, string, string, Log> creator = null)
             where TContext : DbContext
         {
+            if (factory == null)
+            {
+                throw new ArgumentNullException(nameof(factory));
+            }
+
             factory.AddProvider(new EntityFrameworkLoggerProvider<TContext>(serviceProvider, filter, creator));
             return factory;
         }
@@ -133,9 +137,7 @@ namespace ZNetCS.AspNetCore.Logging.EntityFrameworkCore
             Func<int, int, string, string, TLog> creator = null)
             where TContext : DbContext
             where TLog : Log<int>
-        {
-            return AddEntityFramework<TContext, TLog>(factory, serviceProvider, LogLevel.Information, creator);
-        }
+            => AddEntityFramework<TContext, TLog>(factory, serviceProvider, LogLevel.Information, creator);
 
         /// <summary>
         /// Adds an entity framework logger that is enabled for <see cref="Microsoft.Extensions.Logging.LogLevel"/>s of minLevel
@@ -166,9 +168,7 @@ namespace ZNetCS.AspNetCore.Logging.EntityFrameworkCore
             Func<int, int, string, string, TLog> creator = null)
             where TContext : DbContext
             where TLog : Log<int>
-        {
-            return AddEntityFramework<TContext, TLog>(factory, serviceProvider, (_, logLevel) => logLevel >= minLevel, creator);
-        }
+            => AddEntityFramework<TContext, TLog>(factory, serviceProvider, (_, logLevel) => logLevel >= minLevel, creator);
 
         /// <summary>
         /// Adds an entity framework logger that is enabled as defined by the filter function.
@@ -199,6 +199,11 @@ namespace ZNetCS.AspNetCore.Logging.EntityFrameworkCore
             where TContext : DbContext
             where TLog : Log<int>
         {
+            if (factory == null)
+            {
+                throw new ArgumentNullException(nameof(factory));
+            }
+
             factory.AddProvider(new EntityFrameworkLoggerProvider<TContext, TLog>(serviceProvider, filter, creator));
             return factory;
         }
@@ -232,9 +237,7 @@ namespace ZNetCS.AspNetCore.Logging.EntityFrameworkCore
             where TContext : DbContext
             where TLog : Log<int>
             where TLogger : EntityFrameworkLogger<TContext, TLog>
-        {
-            return AddEntityFramework<TContext, TLog, TLogger>(factory, serviceProvider, LogLevel.Information, creator);
-        }
+            => AddEntityFramework<TContext, TLog, TLogger>(factory, serviceProvider, LogLevel.Information, creator);
 
         /// <summary>
         /// Adds an entity framework logger that is enabled for <see cref="Microsoft.Extensions.Logging.LogLevel"/>s of minLevel
@@ -269,9 +272,7 @@ namespace ZNetCS.AspNetCore.Logging.EntityFrameworkCore
             where TContext : DbContext
             where TLog : Log<int>
             where TLogger : EntityFrameworkLogger<TContext, TLog>
-        {
-            return AddEntityFramework<TContext, TLog, TLogger>(factory, serviceProvider, (_, logLevel) => logLevel >= minLevel, creator);
-        }
+            => AddEntityFramework<TContext, TLog, TLogger>(factory, serviceProvider, (_, logLevel) => logLevel >= minLevel, creator);
 
         /// <summary>
         /// Adds an entity framework logger that is enabled as defined by the filter function.
@@ -306,6 +307,11 @@ namespace ZNetCS.AspNetCore.Logging.EntityFrameworkCore
             where TLog : Log<int>
             where TLogger : EntityFrameworkLogger<TContext, TLog>
         {
+            if (factory == null)
+            {
+                throw new ArgumentNullException(nameof(factory));
+            }
+
             factory.AddProvider(new EntityFrameworkLoggerProvider<TContext, TLog, TLogger>(serviceProvider, filter, creator));
             return factory;
         }
@@ -343,9 +349,7 @@ namespace ZNetCS.AspNetCore.Logging.EntityFrameworkCore
             where TLog : Log<TKey>
             where TLogger : EntityFrameworkLogger<TContext, TLog, TKey>
             where TKey : IEquatable<TKey>
-        {
-            return AddEntityFramework<TContext, TLog, TLogger, TKey>(factory, serviceProvider, LogLevel.Information, creator);
-        }
+            => AddEntityFramework<TContext, TLog, TLogger, TKey>(factory, serviceProvider, LogLevel.Information, creator);
 
         /// <summary>
         /// Adds an entity framework logger that is enabled for <see cref="Microsoft.Extensions.Logging.LogLevel"/>s of minLevel
@@ -384,9 +388,7 @@ namespace ZNetCS.AspNetCore.Logging.EntityFrameworkCore
             where TLog : Log<TKey>
             where TLogger : EntityFrameworkLogger<TContext, TLog, TKey>
             where TKey : IEquatable<TKey>
-        {
-            return AddEntityFramework<TContext, TLog, TLogger, TKey>(factory, serviceProvider, (_, logLevel) => logLevel >= minLevel, creator);
-        }
+            => AddEntityFramework<TContext, TLog, TLogger, TKey>(factory, serviceProvider, (_, logLevel) => logLevel >= minLevel, creator);
 
         /// <summary>
         /// Adds an entity framework logger that is enabled as defined by the filter function.
@@ -425,7 +427,12 @@ namespace ZNetCS.AspNetCore.Logging.EntityFrameworkCore
             where TLogger : EntityFrameworkLogger<TContext, TLog, TKey>
             where TKey : IEquatable<TKey>
         {
-            factory.AddProvider(new EntityFrameworkLoggerProvider<TContext, TLog, TLogger, TKey>(serviceProvider, filter));
+            if (factory == null)
+            {
+                throw new ArgumentNullException(nameof(factory));
+            }
+
+            factory.AddProvider(new EntityFrameworkLoggerProvider<TContext, TLog, TLogger, TKey>(serviceProvider, filter, creator));
             return factory;
         }
 

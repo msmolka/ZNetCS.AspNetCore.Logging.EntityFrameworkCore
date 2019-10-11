@@ -246,30 +246,29 @@ namespace ZNetCS.AspNetCore.Logging.EntityFrameworkCore
         /// <param name="eventId">
         /// The event id to write.
         /// </param>
+        [SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "Saving log should never throw error.")]
         protected virtual void WriteMessage(string message, LogLevel logLevel, int eventId)
         {
             // create separate scope for DbContextOptions and DbContext
-            using (var scope = this.serviceProvider.CreateScope())
+            using var scope = this.serviceProvider.CreateScope();
+
+            // create separate DbContext for adding log
+            // normally we should rely on scope context, but in rare scenarios when DbContext is
+            // registered as singleton, we should avoid this.
+            using var context = ActivatorUtilities.CreateInstance<TContext>(scope.ServiceProvider);
+
+            // create new log with resolving dependency injection
+            TLog log = this.Creator((int)logLevel, eventId, this.Name, message);
+
+            context.Set<TLog>().Add(log);
+
+            try
             {
-                // create separate DbContext for adding log
-                // normally we should rely on scope context, but in rare scenarios when DbContext is
-                // registered as singleton, we should avoid this.
-                using (var context = ActivatorUtilities.CreateInstance<TContext>(scope.ServiceProvider))
-                {
-                    // create new log with resolving dependency injection
-                    TLog log = this.Creator((int)logLevel, eventId, this.Name, message);
-
-                    context.Set<TLog>().Add(log);
-
-                    try
-                    {
-                        context.SaveChanges();
-                    }
-                    catch
-                    {
-                        // if db cannot save error we should ignore it. To not cause additional connection errors.
-                    }
-                }
+                context.SaveChanges();
+            }
+            catch
+            {
+                // if db cannot save error we should ignore it. To not cause additional connection errors.
             }
         }
 
@@ -291,18 +290,16 @@ namespace ZNetCS.AspNetCore.Logging.EntityFrameworkCore
         private TLog DefaultCreator(int logLevel, int eventId, string logName, string message)
         {
             // create separate scope for Scope registered dependencies.
-            using (var scope = this.serviceProvider.CreateScope())
-            {
-                var log = ActivatorUtilities.CreateInstance<TLog>(scope.ServiceProvider);
+            using var scope = this.serviceProvider.CreateScope();
+            var log = ActivatorUtilities.CreateInstance<TLog>(scope.ServiceProvider);
 
-                log.TimeStamp = DateTimeOffset.Now;
-                log.Level = logLevel;
-                log.EventId = eventId;
-                log.Name = logName.Length > 255 ? logName.Substring(0, 255) : logName;
-                log.Message = message;
+            log.TimeStamp = DateTimeOffset.Now;
+            log.Level = logLevel;
+            log.EventId = eventId;
+            log.Name = logName.Length > 255 ? logName.Substring(0, 255) : logName;
+            log.Message = message;
 
-                return log;
-            }
+            return log;
         }
 
         #endregion

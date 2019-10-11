@@ -3,48 +3,56 @@
   <PropertyGroup>
     <Description>This is Entity Framework Core logger and logger provider. A small package to allow store logs in any data store using Entity Framework Core.</Description>
     <Copyright>Marcin Smółka zNET Computer Solutions</Copyright>
-    <VersionPrefix>2.0.2</VersionPrefix>
+    <VersionPrefix>2.1.0</VersionPrefix>
     <Authors>Marcin Smółka</Authors>
-    <TargetFrameworks>net461;netstandard2.0</TargetFrameworks>
+    <TargetFrameworks>net461;netstandard2.0;netcoreapp3.0</TargetFrameworks>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <AssemblyName>ZNetCS.AspNetCore.Logging.EntityFrameworkCore</AssemblyName>
     <PackageId>ZNetCS.AspNetCore.Logging.EntityFrameworkCore</PackageId>
     <PackageTags>aspnetcore;aspnetcoremvc;logging;loggerprovider;logger;ASP.NET;MVC;ef;entity-framework-core;Entity Framework Core;netcore</PackageTags>
     <PackageProjectUrl>https://github.com/msmolka/ZNetCS.AspNetCore.Logging.EntityFrameworkCore</PackageProjectUrl>
     <PackageLicenseUrl>https://raw.githubusercontent.com/msmolka/ZNetCS.AspNetCore.Logging.EntityFrameworkCore/master/LICENSE</PackageLicenseUrl>
-    <PackageReleaseNotes>Added silent error handling on logger SaveChanges()</PackageReleaseNotes>
+    <PackageReleaseNotes>Dependencies and code cleanup</PackageReleaseNotes>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/msmolka/ZNetCS.AspNetCore.Logging.EntityFrameworkCore</RepositoryUrl>
+    <NoWarn>$(NoWarn);NU5125</NoWarn>
+    <!-- remove once tools are truly ready for NuGet's new 'license' element -->
     <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
     <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
     <GenerateAssemblyTitleAttribute>false</GenerateAssemblyTitleAttribute>
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
     <GenerateAssemblyCopyrightAttribute>false</GenerateAssemblyCopyrightAttribute>
     <CodeAnalysisRuleSet>..\..\CommonRuleSet.ruleset</CodeAnalysisRuleSet>
+    <LangVersion>8.0</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
     <AdditionalFiles Include="..\..\stylecop.json" Link="stylecop.json" />
   </ItemGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net461|AnyCPU'">
-  </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net461|AnyCPU'">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <TreatWarningsAsErrors />
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="2.0.1" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="2.0.0" />
-    <PackageReference Include="StyleCop.Analyzers" Version="1.1.0-beta006">
-      <PrivateAssets>All</PrivateAssets>
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0-beta2-19367-01" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="2.9.6">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
   </ItemGroup>
 
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net461' ">
-    <Reference Include="System" />
-    <Reference Include="Microsoft.CSharp" />
+  <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp3.0'">
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.0.0" />
   </ItemGroup>
 
+  <ItemGroup Condition="'$(TargetFramework)' != 'netcoreapp3.0'">
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="2.0.1" />
+  </ItemGroup>
+  
 </Project>
