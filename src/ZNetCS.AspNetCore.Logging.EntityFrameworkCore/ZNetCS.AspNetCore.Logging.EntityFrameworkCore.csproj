@@ -1,52 +1,20 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <Description>This is Entity Framework Core logger and logger provider. A small package to allow store logs in any data store using Entity Framework Core.</Description>
-    <Copyright>Marcin Smółka zNET Computer Solutions</Copyright>
-    <VersionPrefix>2.1.1</VersionPrefix>
-    <Authors>Marcin Smółka</Authors>
-    <TargetFrameworks>net461;netstandard2.0;netcoreapp3.0</TargetFrameworks>
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <AssemblyName>ZNetCS.AspNetCore.Logging.EntityFrameworkCore</AssemblyName>
-    <PackageId>ZNetCS.AspNetCore.Logging.EntityFrameworkCore</PackageId>
-    <PackageTags>aspnetcore;aspnetcoremvc;logging;loggerprovider;logger;ASP.NET;MVC;ef;entity-framework-core;Entity Framework Core;netcore</PackageTags>
-    <PackageProjectUrl>https://github.com/msmolka/ZNetCS.AspNetCore.Logging.EntityFrameworkCore</PackageProjectUrl>
-    <PackageLicenseUrl>https://raw.githubusercontent.com/msmolka/ZNetCS.AspNetCore.Logging.EntityFrameworkCore/master/LICENSE</PackageLicenseUrl>
-    <PackageReleaseNotes>Downgrade min dependency on EF Core for .NET Core 3</PackageReleaseNotes>
-    <RepositoryType>git</RepositoryType>
-    <RepositoryUrl>https://github.com/msmolka/ZNetCS.AspNetCore.Logging.EntityFrameworkCore</RepositoryUrl>
-    <NoWarn>$(NoWarn);NU5125</NoWarn>
-    <!-- remove once tools are truly ready for NuGet's new 'license' element -->
-    <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
-    <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
-    <GenerateAssemblyTitleAttribute>false</GenerateAssemblyTitleAttribute>
-    <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
-    <GenerateAssemblyCopyrightAttribute>false</GenerateAssemblyCopyrightAttribute>
-    <CodeAnalysisRuleSet>..\..\CommonRuleSet.ruleset</CodeAnalysisRuleSet>
-    <LangVersion>8.0</LangVersion>
+    <TargetFrameworks>netcoreapp3.1;net5.0;net6.0</TargetFrameworks>
   </PropertyGroup>
 
-  <ItemGroup>
-    <AdditionalFiles Include="..\..\stylecop.json" Link="stylecop.json" />
+  <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp3.1'">
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.22"/>
   </ItemGroup>
 
+  <ItemGroup Condition="'$(TargetFramework)' == 'net5.0'">
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.13"/>
+  </ItemGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <TreatWarningsAsErrors />
-  </PropertyGroup>
-
-  <ItemGroup>
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="2.0.1" />
-    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0-beta2-19367-01" PrivateAssets="all" />
-    <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="2.9.7">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-
+  <ItemGroup Condition="'$(TargetFramework)' == 'net6.0'">
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.1"/>
   </ItemGroup>
 
 </Project>

@@ -1,11 +1,14 @@
 # ZNetCS.AspNetCore.Logging.EntityFrameworkCore
 
 [![NuGet](https://img.shields.io/nuget/v/ZNetCS.AspNetCore.Logging.EntityFrameworkCore.svg)](https://www.nuget.org/packages/ZNetCS.AspNetCore.Logging.EntityFrameworkCore)
+[![Build](https://github.com/msmolka/ZNetCS.AspNetCore.Logging.EntityFrameworkCore/workflows/build/badge.svg)](https://github.com/msmolka/ZNetCS.AspNetCore.Logging.EntityFrameworkCore/actions)
 
-This is Entity Framework Core logger and logger provider. A small package to allow store logs in any data store using Entity Framework Core. It was prepared to use in ASP NET Core application, but it does not contain any 
-references that prevents to use it in plain .NET Core application.
+This is Entity Framework Core logger and logger provider. A small package to allow store logs in any data store using Entity Framework Core. It was prepared to use in ASP
+NET Core application, but it does not contain any references that prevents to use it in plain .NET Core application.
 
-## Installing 
+As from version 2.0.2 there is silent error handling on logger SaveChanges(). To avoid Db error having impact on application.
+
+## Installing
 
 Install using the [ZNetCS.AspNetCore.Logging.EntityFrameworkCore NuGet package](https://www.nuget.org/packages/ZNetCS.AspNetCore.Logging.EntityFrameworkCore)
 
@@ -13,29 +16,28 @@ Install using the [ZNetCS.AspNetCore.Logging.EntityFrameworkCore NuGet package](
 PM> Install-Package ZNetCS.AspNetCore.Logging.EntityFrameworkCore
 ```
 
-## Usage 
+## Usage
 
 When you install the package, it should be added to your `.csproj`. Alternatively, you can add it directly by adding:
 
-
 ```xml
 <ItemGroup>
-    <PackageReference Include="ZNetCS.AspNetCore.Logging.EntityFrameworkCore" Version="2.1.0" />
+    <PackageReference Include="ZNetCS.AspNetCore.Logging.EntityFrameworkCore" Version="6.0.0" />
 </ItemGroup>
 ```
 
-As from ASP.NET Core 2.0 version, the configuration of logging was changed. Now it should be configure with `WebHostBuilder`
-See: [Introduction to logging in ASP.NET Core](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/logging/?tabs=aspnetcore2x) for more details.
+### .NET 6
+In order to use the IP filtering middleware, you must configure the services in the `Program.cs` file.
 
-As from version 2.0.2 there is silent error handling on logger SaveChanges(). To avoid Db error having impact on application.
+```c#
+// Add services to the container.
+builder.Logging.AddEntityFramework<MyDbContext>();
+```
 
-```csharp
-using ZNetCS.AspNetCore.Logging.EntityFrameworkCore;
-```
-```
-...
-```
-```csharp
+
+### .NET 5 and Below
+
+```c#
 public static void Main(string[] args)
 {
     var webHost = new WebHostBuilder()
@@ -45,7 +47,7 @@ public static void Main(string[] args)
             // other log providers
             // ...
             //
-            logging.AddEntityFramework<MyDbContent>();
+            logging.AddEntityFramework<MyDbContext>();
 
         })
         .UseStartup<Startup>()
@@ -55,12 +57,23 @@ public static void Main(string[] args)
 }
 
 ```
-### Important Notes
-In most case scenario you would not like add all logs from application to database. A lot of of them is jut debug/trace ones.
-In that case is better use filter before add `Logger`. This will also prevent some `StackOverflowException` when using this 
-logger to log `EntityFrameworkCore` logs.
 
-```csharp
+### Important Notes
+
+In most case scenario you would not like add all logs from application to database. A lot of of them is jut debug/trace ones. In that case is better use filter before
+add `Logger`. This will also prevent some `StackOverflowException` when using this logger to log `EntityFrameworkCore` logs.
+
+### .NET 6
+
+```c#
+builder.Logging..AddFilter<EntityFrameworkLoggerProvider<MyDbContent>>("Microsoft", LogLevel.None);
+builder.Logging..AddFilter<EntityFrameworkLoggerProvider<MyDbContent>>("System", LogLevel.None);
+builder.Logging..AddEntityFramework<MyDbContext>();
+```
+
+### .NET 5 and Below
+
+```c#
 public static void Main(string[] args)
 {
     var webHost = new WebHostBuilder()
@@ -75,7 +88,7 @@ public static void Main(string[] args)
             // filters needs to applied properly to chosen provider
             logging.AddFilter<EntityFrameworkLoggerProvider<MyDbContent>>("Microsoft", LogLevel.None);
             logging.AddFilter<EntityFrameworkLoggerProvider<MyDbContent>>("System", LogLevel.None);
-            logging.AddEntityFramework<MyDbContent>();
+            logging.AddEntityFramework<MyDbContext>();
 
         })
         .UseStartup<Startup>()
@@ -85,8 +98,9 @@ public static void Main(string[] args)
 }
 ```
 
-It is also possible to setting filters inside `appsettings.json` file. This provider is using `EntityFramework` alias. This way is recommended because there is no need
-to care about proper provider definition.
+It is also possible to setting filters inside `appsettings.json` file. This provider is using `EntityFramework` alias. This way is recommended because there is no need to
+care about proper provider definition.
+
 ```json
 {
   "Logging": {
@@ -100,7 +114,7 @@ to care about proper provider definition.
 }
 ```
 
-```csharp
+```c#
 public static void Main(string[] args)
 {
     var webHost = new WebHostBuilder()
@@ -113,7 +127,7 @@ public static void Main(string[] args)
             // ...
             //
 
-            logging.AddEntityFramework<MyDbContent>();
+            logging.AddEntityFramework<MyDbContext>();
 
         })
         .UseStartup<Startup>()
@@ -125,7 +139,7 @@ public static void Main(string[] args)
 
 Then you need to setup your context to have access to log table e.g.
 
-```csharp
+```c#
 using ZNetCS.AspNetCore.Logging.EntityFrameworkCore;
 
 public class MyDbContext : DbContext
@@ -149,8 +163,9 @@ public class MyDbContext : DbContext
 }
 ```
 
-There is also possibilty to extend base `Log` class.
-```csharp
+There is also possibility to extend base `Log` class.
+
+```c#
 
 public class ExtendedLog : Log
 {
@@ -181,13 +196,13 @@ public class ExtendedLog : Log
 
 Change `MyDbContext` to use new extended log model
 
-```csharp
-public DbSet<ExtendedLog> Logs { get; set; }
+```c#
+public DbSet<ExtendedLog> Logs => this.Set<ExtendedLog>;
 ```
 
 You can extend `ModelBuilder` as well:
 
-```csharp
+```c#
 
 protected override void OnModelCreating(ModelBuilder modelBuilder)
 {
@@ -216,7 +231,7 @@ protected override void OnModelCreating(ModelBuilder modelBuilder)
 
 To use `IHttpContextAccessor` there is need to register it inside `ConfigureServices` call of `Startup`:
 
-```csharp
+```c#
 
 public void ConfigureServices(IServiceCollection services)
 {
@@ -228,7 +243,7 @@ public void ConfigureServices(IServiceCollection services)
 
 Add extended log registration
 
-```csharp
+```c#
 public static void Main(string[] args)
 {
     var webHost = new WebHostBuilder()
@@ -241,7 +256,7 @@ public static void Main(string[] args)
             // ...
             //
 
-            logging.AddEntityFramework<MyDbContent, ExtendedLog>();
+            logging.AddEntityFramework<MyDbContext, ExtendedLog>();
 
         })
         .UseStartup<Startup>()
@@ -253,7 +268,7 @@ public static void Main(string[] args)
 
 There is also possibility to create new log model using custom creator method. This can be done by providing options during configuration.
 
-```csharp
+```c#
 public static void Main(string[] args)
 {
     var webHost = new WebHostBuilder()
@@ -266,7 +281,7 @@ public static void Main(string[] args)
             // ...
             //
 
-            logging.AddEntityFramework<MyDbContent>(
+            logging.AddEntityFramework<MyDbContext>(
                 opts =>
                 {
                     opts.Creator = (logLevel, eventId, name, message) => new Log
@@ -288,75 +303,3 @@ public static void Main(string[] args)
 ```
 
 
-### Below configuration is still compatible with 2.0, but currently recommended way to configure logging is to use Web Host Builder.
-In order to use the Entity Framework Logger Provider, you must configure the logger factory in `Configure` call of `Startup`: 
-
-```csharp
-using ZNetCS.AspNetCore.Logging.EntityFrameworkCore;
-```
-
-```
-...
-```
-
-```csharp
-public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
-{
-    // MyDbContext is registered in ConfigureServices Entity Framework Core application context
-    loggerFactory.AddEntityFramework<MyDbContent>(app.ApplicationServices);
-
-    // other middleware e.g. MVC etc
-}
-```
-
-For filtering with `ILoggerFactory` there is required to install `Microsoft.Extensions.Logging.Filter` package (which is now deprecated).
-
-```
-PM> Install-Package  Microsoft.Extensions.Logging.Filter;
-```
-
-```csharp
-    loggerFactory
-        .WithFilter(
-            new FilterLoggerSettings
-            {
-                { "Microsoft", LogLevel.None },
-                { "System", LogLevel.None }
-            })
-        .AddEntityFramework<MyDbContent>(app.ApplicationServices);
-```
-
-For using extended logging change in `Configure` call of `Startup`: 
-
-```csharp
-public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
-{
-    // MyDbContext is registered in ConfigureServices Entity Framework Core application context
-    loggerFactory.AddEntityFramework<MyDbContext, ExtendedLog>(app.ApplicationServices);
-
-    // other middleware e.g. MVC etc
-}
-
-```
-
-Usage of ustom creator method (without resolving dependencies). This can be done by extending `loggerFactory.AddEntityFramework` call.
-
-```csharp
-public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
-{
-    // MyDbContext is registered in ConfigureServices Entity Framework Core application context
-    loggerFactory 
-        .AddEntityFramework<MyDbContext>(
-            app.ApplicationServices,
-            creator: (logLevel, eventId, name, message) => new Log
-            {
-                TimeStamp = DateTimeOffset.Now,
-                Level = logLevel,
-                EventId = eventId,
-                Name = "This is my custom log",
-                Message = message
-            });
-
-    // other middleware e.g. MVC etc
-}
-```
