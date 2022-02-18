@@ -2,8 +2,12 @@
 
   <PropertyGroup>
     <AssemblyName>ZNetCS.AspNetCore.Logging.EntityFrameworkCore</AssemblyName>
-    <TargetFrameworks>netcoreapp3.1;net5.0;net6.0</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;netcoreapp3.1;net5.0;net6.0</TargetFrameworks>
   </PropertyGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.22"/>
+  </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp3.1'">
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.22"/>
