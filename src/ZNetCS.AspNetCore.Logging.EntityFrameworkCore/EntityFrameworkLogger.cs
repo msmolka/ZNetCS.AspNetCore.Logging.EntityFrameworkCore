@@ -186,9 +186,6 @@ public class EntityFrameworkLogger<TContext, TLog, TKey> : ILogger
     #region ILogger
 
     /// <inheritdoc/>
-    public virtual IDisposable BeginScope<TState>(TState state) => NoopDisposable.Instance;
-
-    /// <inheritdoc/>
     public virtual bool IsEnabled(LogLevel logLevel)
     {
         // internal check to not log any Microsoft.EntityFrameworkCore. It won't work any way and cause StackOverflowException
@@ -199,6 +196,11 @@ public class EntityFrameworkLogger<TContext, TLog, TKey> : ILogger
 
         return (logLevel != LogLevel.None) && this.filter(this.Name, logLevel);
     }
+
+    /// <inheritdoc />
+#pragma warning disable CS8633
+    public IDisposable BeginScope<TState>(TState state) where TState : notnull => NoopDisposable.Instance;
+#pragma warning restore CS8633
 
     /// <inheritdoc/>
     public virtual void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter)
@@ -252,7 +254,7 @@ public class EntityFrameworkLogger<TContext, TLog, TKey> : ILogger
     protected virtual void WriteMessage(string message, LogLevel logLevel, int eventId)
     {
         // create separate scope for DbContextOptions and DbContext
-        using IServiceScope? scope = this.serviceProvider.CreateScope();
+        using IServiceScope scope = this.serviceProvider.CreateScope();
 
         // create separate DbContext for adding log
         // normally we should rely on scope context, but in rare scenarios when DbContext is
@@ -292,7 +294,7 @@ public class EntityFrameworkLogger<TContext, TLog, TKey> : ILogger
     private TLog DefaultCreator(int logLevel, int eventId, string logName, string message)
     {
         // create separate scope for Scope registered dependencies.
-        using IServiceScope? scope = this.serviceProvider.CreateScope();
+        using IServiceScope scope = this.serviceProvider.CreateScope();
         var log = ActivatorUtilities.CreateInstance<TLog>(scope.ServiceProvider);
 
         log.TimeStamp = DateTimeOffset.Now;
