@@ -1,7 +1,7 @@
 <Project>
   <PropertyGroup>
-    <Version>9.0.0</Version>
-    <PackageReleaseNotes>Added support for .net core 7, 8, and 9</PackageReleaseNotes>
+    <Version>10.0.0</Version>
+    <PackageReleaseNotes>Added support for .net 10, drop support for .net 3.1 and .net 5.0</PackageReleaseNotes>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -10,7 +10,7 @@
     <Description>This is Entity Framework Core logger and logger provider. A small package to allow store logs in any data store using Entity Framework Core.</Description>
     <Authors>Marcin Smółka</Authors>
     <Owners>Marcin Smółka</Owners>
-    <Copyright>Copyright © Marcin Smółka 2016 - 2022</Copyright>
+    <Copyright>Copyright © Marcin Smółka 2016 - 2025</Copyright>
     <Company>Marcin Smółka zNET Computer Solutions</Company>
   </PropertyGroup>
 
@@ -44,7 +44,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="all"/>
-    <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="9.0.0">
+    <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="10.0.100">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
@@ -57,6 +57,5 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <TreatWarningsAsErrors/>
   </PropertyGroup>
-
 
 </Project>

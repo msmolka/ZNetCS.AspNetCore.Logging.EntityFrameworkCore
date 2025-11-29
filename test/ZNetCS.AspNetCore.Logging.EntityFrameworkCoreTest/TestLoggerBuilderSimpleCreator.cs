@@ -52,7 +52,7 @@ public class TestLoggerBuilderSimpleCreator
         await using var context = new ContextSimple(options);
         var logs = context.Logs.ToList();
 
-        Assert.AreEqual(2, logs.Count);
+        Assert.HasCount(2, logs);
         Assert.AreEqual("Handling request Test2", logs.First().Message);
         Assert.AreEqual("This is my custom log", logs.First().Name);
         Assert.AreEqual(1, logs.First().EventId);

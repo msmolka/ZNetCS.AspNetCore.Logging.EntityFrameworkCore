@@ -52,7 +52,7 @@ public class TestLoggerBuilderSimpleSettings
         await using var context = new ContextSimple(options);
         var logs = context.Logs.ToList();
 
-        Assert.AreEqual(2, logs.Count);
+        Assert.HasCount(2, logs);
         Assert.AreEqual("Handling request", logs.First().Message);
         Assert.AreEqual(1, logs.First().EventId);
         Assert.AreEqual("Finished handling request", logs.Last().Message);

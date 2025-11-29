@@ -52,8 +52,8 @@ public class TestLoggerBuilderSimpleException
         await using var context = new ContextSimple(options);
         var logs = context.Logs.ToList();
 
-        Assert.AreEqual(1, logs.Count);
-        Assert.AreEqual(true, logs.First().Message.StartsWith("Exception message"));
+        Assert.HasCount(1, logs);
+        Assert.StartsWith("Exception message", logs.First().Message);
         Assert.AreEqual(1, logs.First().EventId);
     }
 
